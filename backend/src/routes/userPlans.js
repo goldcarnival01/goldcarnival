@@ -96,7 +96,8 @@ router.post('/purchase', authenticateToken, async (req, res) => {
       purchasePrice
     });
 
-    if (!planId) {
+    const normalizedPlanId = Number(planId);
+    if (!normalizedPlanId || Number.isNaN(normalizedPlanId)) {
       return res.status(400).json({
         success: false,
         message: 'Plan ID is required'
@@ -104,7 +105,7 @@ router.post('/purchase', authenticateToken, async (req, res) => {
     }
 
     // Get plan details
-    const plan = await Plan.findByPk(planId);
+    const plan = await Plan.findByPk(normalizedPlanId);
     if (!plan || !plan.isActive) {
       return res.status(404).json({
         success: false,
@@ -117,7 +118,7 @@ router.post('/purchase', authenticateToken, async (req, res) => {
       const existingPlan = await UserPlan.findOne({
         where: {
           userId: req.user.id,
-          planId: planId,
+          planId: normalizedPlanId,
           status: 'active',
           isActive: true
         }
@@ -136,16 +137,21 @@ router.post('/purchase', authenticateToken, async (req, res) => {
     expiryDate.setFullYear(expiryDate.getFullYear() + 1);
 
     // Create user plan
+    // Normalize price and wallet address
+    const parsedPrice = Number(purchasePrice);
+    const resolvedPrice = Number.isFinite(parsedPrice)
+      ? parsedPrice
+      : Number(plan.price ?? plan.amount);
+    const normalizedWallet = typeof walletAddress === 'string' ? walletAddress.trim() : null;
+
     const userPlan = await UserPlan.create({
       userId: req.user.id,
-      planId: planId,
-      purchasePrice: purchasePrice !== undefined && purchasePrice !== null && !isNaN(parseFloat(purchasePrice))
-        ? parseFloat(purchasePrice)
-        : (plan.price || plan.amount),
+      planId: normalizedPlanId,
+      purchasePrice: resolvedPrice,
       expiryDate: expiryDate,
       paymentMethod: paymentMethod || 'wallet',
-      transactionId: transactionId,
-      walletAddress: walletAddress,
+      transactionId: transactionId || null,
+      walletAddress: normalizedWallet,
       status: 'active',
       isActive: true,
       verified: 'pending'

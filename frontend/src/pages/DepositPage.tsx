@@ -65,12 +65,23 @@ const DepositPage = () => {
       // Create a plan entry immediately as requested
       const plan = planId ? await plansAPI.getById(planId) : null;
       const resolvedPlan = plan?.data?.data || plan?.data;
-      const purchasePrice = parseFloat(usdtAmount || "0") || fixedAmount || parseFloat(resolvedPlan?.amount ?? resolvedPlan?.price ?? "0");
+      const primaryAmount = Number(usdtAmount);
+      const fallbackAmountFromPlan = Number(
+        resolvedPlan?.amount ?? resolvedPlan?.price ?? 0
+      );
+      const purchasePriceNumber = Number.isFinite(primaryAmount) && primaryAmount > 0
+        ? primaryAmount
+        : (typeof fixedAmount === 'number' && Number.isFinite(fixedAmount) ? fixedAmount : fallbackAmountFromPlan);
+
+      const normalizedPlanId = planId ? Number(planId) : undefined;
+      const normalizedWallet = (userFromWallet || '').trim();
+      const purchasePrice = Number.isFinite(purchasePriceNumber) ? purchasePriceNumber.toFixed(2) : '0.00';
+
       await (await import("@/services/api")).userPlansAPI.purchase({
-        planId: planId,
+        planId: normalizedPlanId,
         paymentMethod: "usdt_trc20_manual",
         transactionId: `MANUAL_USDT_${Date.now()}`,
-        walletAddress: userFromWallet,
+        walletAddress: normalizedWallet,
         purchasePrice
       } as any);
       setShowQr(false);
