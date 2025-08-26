@@ -80,6 +80,7 @@ const corsOptions = {
       'https://www.goldcarnivals.com',
       'https://jumboticket.vercel.app',
       'https://gold-carnival-frontend.onrender.com',
+      'https://goldcarnival-qt17mtszo-goldcarnival01s-projects.vercel.app',
       'http://localhost:8080',
       'http://localhost:3000',
       'http://localhost:5173' // Vite dev server
