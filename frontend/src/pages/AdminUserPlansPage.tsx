@@ -172,7 +172,7 @@ const AdminUserPlansPage = () => {
                     </TableCell>
                     <TableCell>{getVerifiedBadge(p.verified)}</TableCell>
                     <TableCell>
-                      {p.verified === 'pending' && (
+                      {p.verified === 'pending' ? (
                         <div className="flex gap-2">
                           <Button 
                             size="sm" 
@@ -189,12 +189,12 @@ const AdminUserPlansPage = () => {
                             Reject
                           </Button>
                         </div>
-                      )}
-                      {p.verified === 'verified' && (
+                      ) : p.verified === 'verified' ? (
                         <Badge variant="default" className="bg-green-600">Verified</Badge>
-                      )}
-                      {p.verified === 'rejected' && (
+                      ) : p.verified === 'rejected' ? (
                         <Badge variant="destructive">Rejected</Badge>
+                      ) : (
+                        <Badge variant="secondary">Unknown</Badge>
                       )}
                     </TableCell>
                   </TableRow>

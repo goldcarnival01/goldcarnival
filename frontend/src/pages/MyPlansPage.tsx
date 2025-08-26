@@ -31,6 +31,7 @@ const MyPlansPage = () => {
       const response = await userPlansAPI.getMyPlans();
       console.log('User plans response:', response.data);
       if (response.data.success) {
+        console.log('Individual user plans:', response.data.data);
         setUserPlans(response.data.data);
       }
     } catch (error) {
@@ -92,9 +93,9 @@ const MyPlansPage = () => {
   };
 
   const getVerifiedColor = (verified) => {
-    if (!verified) return 'bg-gray-100 text-gray-800';
+    if (!verified || verified === '') return 'bg-yellow-100 text-yellow-800';
     
-    switch (verified) {
+    switch (verified.toLowerCase()) {
       case 'verified':
         return 'bg-green-100 text-green-800';
       case 'pending':
@@ -102,14 +103,14 @@ const MyPlansPage = () => {
       case 'rejected':
         return 'bg-red-100 text-red-800';
       default:
-        return 'bg-blue-100 text-gray-800';
+        return 'bg-yellow-100 text-yellow-800';
     }
   };
 
   const getVerifiedIcon = (verified) => {
-    if (!verified) return <Package className="w-4 h-4" />;
+    if (!verified || verified === '') return <Clock className="w-4 h-4" />;
     
-    switch (verified) {
+    switch (verified.toLowerCase()) {
       case 'verified':
         return <CheckCircle className="w-4 h-4" />;
       case 'pending':
@@ -117,7 +118,7 @@ const MyPlansPage = () => {
       case 'rejected':
         return <XCircle className="w-4 h-4" />;
       default:
-        return <Package className="w-4 h-4" />;
+        return <Clock className="w-4 h-4" />;
     }
   };
 
@@ -171,7 +172,10 @@ const MyPlansPage = () => {
               </Card>
             ) : (
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {userPlans.map((userPlan) => (
+                {userPlans.map((userPlan) => {
+                  console.log('Rendering userPlan:', userPlan);
+                  console.log('Verified value:', userPlan.verified, 'Type:', typeof userPlan.verified);
+                  return (
                   <Card key={userPlan.id} className="overflow-hidden">
                     <CardHeader className="bg-gradient-to-r from-amber-500 to-yellow-600 text-white">
                       <div className="flex items-center justify-between">
@@ -194,7 +198,13 @@ const MyPlansPage = () => {
                           <span className="text-sm font-medium">Payment:</span>
                           <Badge className={`${getVerifiedColor(userPlan.verified)} flex items-center gap-1`}>
                             {getVerifiedIcon(userPlan.verified)}
-                            {userPlan.verified ? userPlan.verified.charAt(0).toUpperCase() + userPlan.verified.slice(1) : 'Unknown'}
+                            {(() => {
+                              if (!userPlan.verified || userPlan.verified === '') return 'Pending';
+                              if (typeof userPlan.verified === 'string') {
+                                return userPlan.verified.charAt(0).toUpperCase() + userPlan.verified.slice(1);
+                              }
+                              return 'Unknown';
+                            })()}
                           </Badge>
                         </div>
 
@@ -243,7 +253,7 @@ const MyPlansPage = () => {
                         )}
 
                         {/* Actions */}
-                        {userPlan.verified === 'verified' && (
+                        {userPlan.verified && userPlan.verified.toLowerCase() === 'verified' && (
                           <div className="border-t pt-4">
                             <Button 
                               variant="outline" 
@@ -258,7 +268,8 @@ const MyPlansPage = () => {
                       </div>
                     </CardContent>
                   </Card>
-                ))}
+                );
+                })}
               </div>
             )}
           </div>
