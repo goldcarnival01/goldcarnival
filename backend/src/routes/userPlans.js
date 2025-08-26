@@ -13,6 +13,11 @@ router.get('/my-plans', authenticateToken, async (req, res) => {
         userId: req.user.id,
         isActive: true
       },
+      attributes: [
+        'id', 'userId', 'planId', 'purchaseDate', 'expiryDate', 'status', 
+        'purchasePrice', 'transactionId', 'paymentMethod', 'walletAddress', 
+        'notes', 'isActive', 'verified', 'createdAt', 'updatedAt'
+      ],
       include: [
         {
           model: Plan,
@@ -50,6 +55,11 @@ router.get('/history', authenticateToken, async (req, res) => {
 
     const { count, rows } = await UserPlan.findAndCountAll({
       where: whereClause,
+      attributes: [
+        'id', 'userId', 'planId', 'purchaseDate', 'expiryDate', 'status', 
+        'purchasePrice', 'transactionId', 'paymentMethod', 'walletAddress', 
+        'notes', 'isActive', 'verified', 'createdAt', 'updatedAt'
+      ],
       include: [
         {
           model: Plan,
@@ -234,6 +244,11 @@ router.get('/admin/all', authenticateToken, requirePermission('plan.manage'), as
 
     const { count, rows } = await UserPlan.findAndCountAll({
       where: whereClause,
+      attributes: [
+        'id', 'userId', 'planId', 'purchaseDate', 'expiryDate', 'status', 
+        'purchasePrice', 'transactionId', 'paymentMethod', 'walletAddress', 
+        'notes', 'isActive', 'verified', 'createdAt', 'updatedAt'
+      ],
       include: [
         {
           model: User,
