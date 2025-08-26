@@ -29,6 +29,7 @@ const MyPlansPage = () => {
     try {
       setLoading(true);
       const response = await userPlansAPI.getMyPlans();
+      console.log('User plans response:', response.data);
       if (response.data.success) {
         setUserPlans(response.data.data);
       }
@@ -91,6 +92,8 @@ const MyPlansPage = () => {
   };
 
   const getVerifiedColor = (verified) => {
+    if (!verified) return 'bg-gray-100 text-gray-800';
+    
     switch (verified) {
       case 'verified':
         return 'bg-green-100 text-green-800';
@@ -99,11 +102,13 @@ const MyPlansPage = () => {
       case 'rejected':
         return 'bg-red-100 text-red-800';
       default:
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-blue-100 text-gray-800';
     }
   };
 
   const getVerifiedIcon = (verified) => {
+    if (!verified) return <Package className="w-4 h-4" />;
+    
     switch (verified) {
       case 'verified':
         return <CheckCircle className="w-4 h-4" />;
@@ -178,7 +183,7 @@ const MyPlansPage = () => {
                         )}
                       </div>
                       <div className="text-2xl font-bold">
-                        ${parseFloat(userPlan.plan.amount).toLocaleString()}
+                        ${userPlan.plan.amount ? parseFloat(userPlan.plan.amount).toLocaleString() : '0'}
                       </div>
                     </CardHeader>
                     
@@ -189,7 +194,7 @@ const MyPlansPage = () => {
                           <span className="text-sm font-medium">Payment:</span>
                           <Badge className={`${getVerifiedColor(userPlan.verified)} flex items-center gap-1`}>
                             {getVerifiedIcon(userPlan.verified)}
-                            {userPlan.verified.charAt(0).toUpperCase() + userPlan.verified.slice(1)}
+                            {userPlan.verified ? userPlan.verified.charAt(0).toUpperCase() + userPlan.verified.slice(1) : 'Unknown'}
                           </Badge>
                         </div>
 
@@ -218,7 +223,7 @@ const MyPlansPage = () => {
                           <span className="text-sm font-medium">Paid:</span>
                           <div className="flex items-center gap-1 text-sm text-muted-foreground">
                             <DollarSign className="w-4 h-4" />
-                            ${parseFloat(userPlan.purchasePrice).toFixed(2)}
+                            ${userPlan.purchasePrice ? parseFloat(userPlan.purchasePrice).toFixed(2) : '0.00'}
                           </div>
                         </div>
 
@@ -238,7 +243,7 @@ const MyPlansPage = () => {
                         )}
 
                         {/* Actions */}
-                        {userPlan.verified === 'verified' && false && (
+                        {userPlan.verified === 'verified' && (
                           <div className="border-t pt-4">
                             <Button 
                               variant="outline" 
