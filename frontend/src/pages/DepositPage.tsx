@@ -23,7 +23,8 @@ const DepositPage = () => {
   const [showQr, setShowQr] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
   // Your receiving address shown in popup
-  const RECEIVER_TRON_ADDRESS = import.meta.env.VITE_RECEIVER_TRON_ADDRESS || "TXrrvf5xgkXmNhNfTZU9WnXKB1uWVP4gsQ";
+  const RECEIVER_TRON_ADDRESS = import.meta.env.VITE_RECEIVER_TRON_ADDRESS || "TSvgtaECg4YZUaPPgAcPeqBu8ZTq9tY3S3
+";
 
   // Only keep UPI (coming soon) and show custom USDT TRC form card
 
