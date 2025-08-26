@@ -86,6 +86,7 @@ const corsOptions = {
       'http://localhost:5173' // Vite dev server
     ].filter(Boolean);
     
+    
     console.log('🔍 CORS check - Origin:', origin);
     console.log('🔍 CORS check - Allowed origins:', allowedOrigins);
     
