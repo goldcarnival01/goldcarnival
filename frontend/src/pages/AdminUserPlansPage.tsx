@@ -51,7 +51,10 @@ const AdminUserPlansPage = () => {
         adminAPI.getUser(userId),
       ]);
 
-      setPlans(plansRes.data.data?.userPlans || plansRes.data.userPlans || []);
+      console.log('Plans response:', plansRes.data);
+      const plansData = plansRes.data.data?.userPlans || plansRes.data.userPlans || [];
+      console.log('Processed plans data:', plansData);
+      setPlans(plansData);
       setUser(userRes.data?.data || userRes.data);
     } catch (e) {
       console.error("Failed to load user plans", e);
@@ -71,7 +74,9 @@ const AdminUserPlansPage = () => {
       verified: "default",
       rejected: "destructive",
     } as const;
-    return <Badge variant={variants[verified as keyof typeof variants]}>{verified}</Badge>;
+    
+    const variant = variants[verified.toLowerCase() as keyof typeof variants] || "secondary";
+    return <Badge variant={variant}>{verified.charAt(0).toUpperCase() + verified.slice(1)}</Badge>;
   };
 
   const handleVerify = async (planId: number) => {
@@ -148,9 +153,15 @@ const AdminUserPlansPage = () => {
                    <TableHead>Actions</TableHead>
                  </TableRow>
                </TableHeader>
-              <TableBody>
-                {plans.map((p) => (
-                  <TableRow key={p.id}>
+                             <TableBody>
+                                   {plans.map((p) => {
+                    console.log('Rendering plan:', p);
+                    console.log('Plan verified status:', p.verified, 'Type:', typeof p.verified);
+                    if (!p.verified) {
+                      console.warn('⚠️ Plan has no verified status:', p.id, p);
+                    }
+                    return (
+                   <TableRow key={p.id}>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <Package className="w-4 h-4 text-muted-foreground" />
@@ -171,35 +182,36 @@ const AdminUserPlansPage = () => {
                       {p.walletAddress || "-"}
                     </TableCell>
                     <TableCell>{getVerifiedBadge(p.verified)}</TableCell>
-                    <TableCell>
-                      {p.verified === 'pending' ? (
-                        <div className="flex gap-2">
-                          <Button 
-                            size="sm" 
-                            onClick={() => handleVerify(p.id)}
-                            className="bg-green-600 hover:bg-green-700"
-                          >
-                            Verify
-                          </Button>
-                          <Button 
-                            size="sm" 
-                            onClick={() => handleReject(p.id)}
-                            variant="destructive"
-                          >
-                            Reject
-                          </Button>
-                        </div>
-                      ) : p.verified === 'verified' ? (
-                        <Badge variant="default" className="bg-green-600">Verified</Badge>
-                      ) : p.verified === 'rejected' ? (
-                        <Badge variant="destructive">Rejected</Badge>
-                      ) : (
-                        <Badge variant="secondary">Unknown</Badge>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-                                 {plans.length === 0 && (
+                                         <TableCell>
+                       {p.verified.toLowerCase() === 'pending' ? (
+                         <div className="flex gap-2">
+                           <Button 
+                             size="sm" 
+                             onClick={() => handleVerify(p.id)}
+                             className="bg-green-600 hover:bg-green-700"
+                           >
+                             Verify
+                           </Button>
+                           <Button 
+                             size="sm" 
+                             onClick={() => handleReject(p.id)}
+                             variant="destructive"
+                           >
+                             Reject
+                           </Button>
+                         </div>
+                       ) : p.verified.toLowerCase() === 'verified' ? (
+                         <Badge variant="default" className="bg-green-600">Verified</Badge>
+                       ) : p.verified.toLowerCase() === 'rejected' ? (
+                         <Badge variant="destructive">Rejected</Badge>
+                       ) : (
+                         <Badge variant="secondary">Unknown</Badge>
+                       )}
+                     </TableCell>
+                                     </TableRow>
+                 );
+                 })}
+                 {plans.length === 0 && (
                    <TableRow>
                      <TableCell colSpan={9} className="text-center text-muted-foreground">
                        No plans found for this user.
