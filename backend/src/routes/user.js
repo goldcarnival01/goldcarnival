@@ -191,10 +191,27 @@ router.get('/stats', asyncHandler(async (req, res) => {
     referralStats = [{ dataValues: { totalReferrals: 0 } }];
   }
 
-  // Calculate additional statistics for MY STATS section
-  const totalDeposit = transactionStats
-    .filter(stat => stat.transactionType === 'deposit')
-    .reduce((sum, stat) => sum + parseFloat(stat.dataValues?.totalAmount || 0), 0);
+  // Calculate total deposit from actual plan purchases instead of deposit transactions
+  // Use direct UserPlan model import; avoid dynamic import/fallback which caused incorrect totals
+  let totalDeposit = 0;
+  try {
+    const userPlans = await UserPlan.findAll({
+      where: { 
+        userId,
+        isActive: true,
+      },
+      attributes: ['purchasePrice']
+    });
+
+    totalDeposit = userPlans.reduce((sum, plan) => {
+      const price = typeof plan.purchasePrice === 'string' || typeof plan.purchasePrice === 'number'
+        ? parseFloat(String(plan.purchasePrice))
+        : 0;
+      return sum + (Number.isFinite(price) ? price : 0);
+    }, 0);
+  } catch (error) {
+    console.log('Error calculating plan purchases total:', error.message);
+  }
 
   const totalCommission = transactionStats
     .filter(stat => stat.transactionType === 'commission')

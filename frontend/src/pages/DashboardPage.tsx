@@ -49,29 +49,7 @@ const DashboardPage = () => {
     { title: "PAYOUT", subtitle: "WITHDRAW", icon: CreditCard, color: "bg-gray-800", path: "/dashboard/withdraw-fund" }
   ];
 
-  const walletData = [
-    { 
-      label: "D WALLET", 
-      amount: `$${userStats?.wallets?.deposit || 0}`, 
-      subtitle: "(For Deposit)", 
-      color: "bg-orange-500",
-      type: "deposit"
-    },
-    { 
-      label: "W WALLET", 
-      amount: `$${userStats?.wallets?.winnings || 0}`, 
-      subtitle: "(Winnings & Income)", 
-      color: "bg-yellow-500",
-      type: "winnings"
-    },
-    { 
-      label: "T WALLET", 
-      amount: `$${userStats?.wallets?.ticket_bonus || 0}`, 
-      subtitle: "(Bonus For Tickets Purchase)", 
-      color: "bg-orange-500",
-      type: "ticket_bonus"
-    }
-  ];
+
 
   // Fetch dashboard data
   useEffect(() => {
@@ -154,20 +132,7 @@ const DashboardPage = () => {
         <div className="flex-1">
           {/* Removed Live Draw Timer banner per requirements */}
 
-          {/* Profile Update Notice */}
-          {!user.profileCompleted && (
-            <div className="bg-orange-100 border border-orange-200 p-4">
-              <div className="container mx-auto flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 bg-orange-500 rounded-full"></div>
-                  <span className="text-orange-800">Please update your profile</span>
-                </div>
-                <Button variant="gold" size="sm">
-                  UPDATE NOW
-                </Button>
-              </div>
-            </div>
-          )}
+
 
           {/* Main Content */}
           <section className="p-6">
@@ -275,81 +240,36 @@ const DashboardPage = () => {
                 )}
               </div>
 
-              <div className="grid lg:grid-cols-3 gap-8">
-                {/* Quick Links */}
-                <div className="lg:col-span-2">
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold text-foreground">QUICK LINKS</h3>
-                    <Button variant="ghost" size="sm" className="text-primary" onClick={() => navigate('/dashboard/deposit')}>
-                      UPDATE PROFILE <ChevronRight className="w-4 h-4 ml-1" />
-                    </Button>
-                  </div>
-                  
-                  <div className="grid md:grid-cols-2 gap-4">
-                    {quickLinks.map((link, index) => (
-                      <Card 
-                        key={index} 
-                        className={`${link.color} p-6 text-white hover:opacity-90 transition-opacity cursor-pointer`}
-                        onClick={() => navigate(link.path)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4">
-                            <div className="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
-                              <link.icon className="w-6 h-6 text-black" />
-                            </div>
-                            <div>
-                              <h4 className="font-semibold">{link.title}</h4>
-                              <p className="text-sm text-gray-300">{link.subtitle}</p>
-                            </div>
-                          </div>
-                          <ChevronRight className="w-5 h-5" />
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
+              {/* Quick Links */}
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-semibold text-foreground">QUICK LINKS</h3>
+                  <Button variant="ghost" size="sm" className="text-primary" onClick={() => navigate('/dashboard/deposit')}>
+                    UPDATE PROFILE <ChevronRight className="w-4 h-4 ml-1" />
+                  </Button>
                 </div>
-
-                {/* My Wallet */}
-                <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold text-foreground">MY WALLET</h3>
-                    <Button variant="ghost" size="sm" className="text-primary" onClick={() => navigate('/dashboard/deposit')}>
-                      VIEW WALLET REPORT <ChevronRight className="w-4 h-4 ml-1" />
-                    </Button>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    {walletData.map((wallet, index) => (
-                      <Card key={index} className="bg-card border-border p-4">
+                
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {quickLinks.map((link, index) => (
+                    <Card 
+                      key={index} 
+                      className={`${link.color} p-6 text-white hover:opacity-90 transition-opacity cursor-pointer`}
+                      onClick={() => navigate(link.path)}
+                    >
+                      <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
-                          <div className={`w-12 h-12 ${wallet.color} rounded-lg flex items-center justify-center`}>
-                            <span className="text-white font-bold text-lg">
-                              {wallet.label.charAt(0)}
-                            </span>
+                          <div className="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
+                            <link.icon className="w-6 h-6 text-black" />
                           </div>
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between">
-                              <span className="font-semibold text-foreground">{wallet.amount}</span>
-                              <span className="text-lg font-bold text-foreground">{wallet.amount}</span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm font-medium text-foreground">{wallet.label}</span>
-                              {wallet.label === "D WALLET" && (
-                                <Button 
-                                  size="sm" 
-                                  className="bg-yellow-600 hover:bg-yellow-700 text-white text-xs px-2 py-1"
-                                  onClick={() => navigate('/dashboard/deposit')}
-                                >
-                                  ADD FUND
-                                </Button>
-                              )}
-                            </div>
-                            <p className="text-xs text-muted-foreground">{wallet.subtitle}</p>
+                          <div>
+                            <h4 className="font-semibold">{link.title}</h4>
+                            <p className="text-sm text-gray-300">{link.subtitle}</p>
                           </div>
                         </div>
-                      </Card>
-                    ))}
-                  </div>
+                        <ChevronRight className="w-5 h-5" />
+                      </div>
+                    </Card>
+                  ))}
                 </div>
               </div>
 
@@ -444,20 +364,6 @@ const DashboardPage = () => {
                     
                     <Card className="bg-card border-border p-4">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
-                          <span className="text-white font-bold text-lg">🎫</span>
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-xs text-muted-foreground">Total Tickets Purchased</p>
-                          <p className="text-lg font-bold text-foreground">
-                            {userStats?.totalTickets || 0}
-                          </p>
-                        </div>
-                      </div>
-                    </Card>
-                    
-                    <Card className="bg-card border-border p-4">
-                      <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
                           <span className="text-white font-bold text-lg">💎</span>
                         </div>
@@ -470,19 +376,7 @@ const DashboardPage = () => {
                       </div>
                     </Card>
                     
-                    <Card className="bg-card border-border p-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
-                          <span className="text-white font-bold text-lg">🏆</span>
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-xs text-muted-foreground">Total Winnings</p>
-                          <p className="text-lg font-bold text-foreground">
-                            {userStats?.totalWinnings || 0}
-                          </p>
-                        </div>
-                      </div>
-                    </Card>
+                    
                     
                     <Card className="bg-card border-border p-4">
                       <div className="flex items-center space-x-3">
