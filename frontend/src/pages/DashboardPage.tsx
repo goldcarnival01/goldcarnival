@@ -152,43 +152,7 @@ const DashboardPage = () => {
         <DashboardSidebar />
         
         <div className="flex-1">
-          {/* Live Draw Timer */}
-          <div className="bg-card border-b border-border p-4">
-            <div className="container mx-auto">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <span className="text-sm text-muted-foreground">LIVE DRAW TIMER</span>
-                  <div className="flex items-center space-x-2">
-                    {nextDrawTime ? [
-                      { value: countdown.days.toString().padStart(2, '0'), label: "Days" },
-                      { value: countdown.hours.toString().padStart(2, '0'), label: "Hours" },
-                      { value: countdown.minutes.toString().padStart(2, '0'), label: "Minutes" },
-                      { value: countdown.seconds.toString().padStart(2, '0'), label: "Seconds" }
-                    ].map((time, index) => (
-                      <div key={index} className="text-center">
-                        <div className="bg-background text-foreground px-2 py-1 rounded text-sm font-bold">
-                          {time.value}
-                        </div>
-                        <div className="text-xs text-muted-foreground">{time.label}</div>
-                      </div>
-                    )) : (
-                      <div className="text-sm text-muted-foreground">No upcoming draws</div>
-                    )}
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <Button variant="outline" size="sm">
-                    <Eye className="w-4 h-4 mr-2" />
-                    Deposit
-                  </Button>
-                  <div className="flex items-center space-x-2">
-                    <img src="https://flagcdn.com/w20/gb.png" alt="English" className="w-5 h-3" />
-                    <span className="text-sm">English</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Removed Live Draw Timer banner per requirements */}
 
           {/* Profile Update Notice */}
           {!user.profileCompleted && (
@@ -210,50 +174,93 @@ const DashboardPage = () => {
             <div className="container mx-auto">
               {/* My Plans Grid */}
               <div className="grid lg:grid-cols-3 gap-6 mb-8">
-                {userPlans.length > 0 ? userPlans.map((userPlan, index) => (
-                  <Card key={userPlan.id || index} className="gradient-gold p-6 text-primary-foreground relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-black/20 to-transparent"></div>
+                {userPlans.length > 0 ? userPlans.map((userPlan, index) => {
+                  const verificationStatus = (userPlan.verified || '').toString().toLowerCase();
+                  const isApproved = verificationStatus === 'verified' || verificationStatus === 'approved';
+                  const isRejected = verificationStatus === 'rejected';
+                  const isPending = !isApproved && !isRejected;
+                  
+                  // Status-based styling
+                  const cardBg = isApproved 
+                    ? 'bg-gradient-to-br from-green-500 to-green-600' 
+                    : isPending 
+                    ? 'bg-gradient-to-br from-orange-500 to-orange-600' 
+                    : 'bg-gradient-to-br from-red-500 to-red-600';
+                  
+                  const statusIcon = isApproved ? '✅' : isPending ? '⏳' : '❌';
+                  const statusText = isApproved ? 'Approved' : isPending ? 'Pending' : 'Rejected';
+                  
+                  return (
+                  <Card key={userPlan.id || index} className={`${cardBg} p-6 text-white relative overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300`}>
+                    <div className="absolute inset-0 bg-gradient-to-br from-black/10 to-black/30"></div>
                     <div className="relative z-10">
                       <div className="flex items-center justify-between mb-4">
-                        <Badge className="bg-black/30 text-white">{userPlan.plan.name}</Badge>
+                        <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
+                          {userPlan.plan.name}
+                        </Badge>
                         {userPlan.plan.badge && (
-                          <Badge className="bg-yellow-500/20 text-yellow-300">{userPlan.plan.badge}</Badge>
+                          <Badge className="bg-yellow-400/90 text-yellow-900 font-semibold">
+                            {userPlan.plan.badge}
+                          </Badge>
                         )}
                       </div>
-                      <div className="text-4xl font-bold mb-6">${parseFloat(userPlan.plan.amount).toLocaleString()}</div>
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center space-x-2">
-                          <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center">
-                            <span className="text-xs text-black font-bold">📅</span>
+                      
+                      <div className="text-4xl font-bold mb-6 text-white drop-shadow-sm">
+                        ${parseFloat(userPlan.plan.amount).toLocaleString()}
+                      </div>
+                      
+                      <div className="space-y-3 mb-6">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-7 h-7 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                              <span className="text-sm">📅</span>
+                            </div>
+                            <span className="text-sm font-medium">
+                              Purchased: {new Date(userPlan.purchaseDate).toLocaleDateString()}
+                            </span>
                           </div>
-                          <span className="text-sm">Purchased: {new Date(userPlan.purchaseDate).toLocaleDateString()}</span>
                         </div>
-                        <div className="flex items-center space-x-2">
-                          <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center">
-                            <span className="text-xs text-black font-bold">✅</span>
+                        
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <div className={`w-7 h-7 rounded-full flex items-center justify-center backdrop-blur-sm ${
+                              isApproved ? 'bg-green-400/30' : isPending ? 'bg-orange-400/30' : 'bg-red-400/30'
+                            }`}>
+                              <span className="text-sm">{statusIcon}</span>
+                            </div>
+                            <span className="text-sm font-medium">Status: {statusText}</span>
                           </div>
-                          <span className="text-sm">Status: {userPlan.status}</span>
+                          <Badge className={`${
+                            isApproved ? 'bg-green-400/20 text-green-100' : 
+                            isPending ? 'bg-orange-400/20 text-orange-100' : 
+                            'bg-red-400/20 text-red-100'
+                          } border-0`}>
+                            {statusText}
+                          </Badge>
                         </div>
                       </div>
+                      
                       {userPlan.plan.features && userPlan.plan.features.length > 0 && (
-                        <div className="mb-4">
+                        <div className="mb-6 space-y-2">
                           {userPlan.plan.features.slice(0, 2).map((feature, idx) => (
-                            <div key={idx} className="flex items-center space-x-2 mb-1">
+                            <div key={idx} className="flex items-center space-x-2">
                               <span className="text-sm">{feature.icon}</span>
-                              <span className="text-xs">{feature.text}</span>
+                              <span className="text-xs text-white/90">{feature.text}</span>
                             </div>
                           ))}
                         </div>
                       )}
+                      
                       <Button 
-                        className="w-full bg-black hover:bg-black/80 text-white"
+                        className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm transition-all duration-200"
                         onClick={() => navigate(`/dashboard/my-plans`)}
                       >
                         VIEW DETAILS
                       </Button>
                     </div>
                   </Card>
-                )) : (
+                  );
+                }) : (
                   <div className="col-span-3 text-center py-12">
                     <div className="text-6xl mb-4">📦</div>
                     <h3 className="text-xl font-semibold text-foreground mb-2">No Plans Yet!</h3>

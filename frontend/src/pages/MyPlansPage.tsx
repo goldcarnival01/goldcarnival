@@ -46,25 +46,7 @@ const MyPlansPage = () => {
     }
   };
 
-  const handleCancelPlan = async (planId) => {
-    if (!confirm('Are you sure you want to cancel this plan?')) return;
-    
-    try {
-      await userPlansAPI.cancel(planId);
-      toast({
-        title: "Success",
-        description: "Plan cancelled successfully",
-      });
-      fetchUserPlans(); // Refresh the list
-    } catch (error) {
-      console.error('Error cancelling plan:', error);
-      toast({
-        title: "Error",
-        description: "Failed to cancel plan",
-        variant: "destructive",
-      });
-    }
-  };
+
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -175,43 +157,59 @@ const MyPlansPage = () => {
                 {userPlans.map((userPlan) => {
                   console.log('Rendering userPlan:', userPlan);
                   console.log('Verified value:', userPlan.verified, 'Type:', typeof userPlan.verified);
+                  
+                  const verificationStatus = (userPlan.verified || '').toString().toLowerCase();
+                  const isApproved = verificationStatus === 'verified' || verificationStatus === 'approved';
+                  const isRejected = verificationStatus === 'rejected';
+                  const isPending = !isApproved && !isRejected;
+                  
+                  // Status-based header styling
+                  const headerBg = isApproved 
+                    ? 'bg-gradient-to-r from-green-500 to-green-600' 
+                    : isPending 
+                    ? 'bg-gradient-to-r from-orange-500 to-orange-600' 
+                    : 'bg-gradient-to-r from-red-500 to-red-600';
+                  
                   return (
-                  <Card key={userPlan.id} className="overflow-hidden">
-                    <CardHeader className="bg-gradient-to-r from-amber-500 to-yellow-600 text-white">
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-lg">{userPlan.plan.name}</CardTitle>
-                        {userPlan.plan.badge && (
-                          <Badge variant="secondary" className="bg-white/20 text-white">
-                            {userPlan.plan.badge}
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="text-2xl font-bold">
-                        ${userPlan.plan.amount ? parseFloat(userPlan.plan.amount).toLocaleString() : '0'}
+                  <Card key={userPlan.id} className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 border-0">
+                    <CardHeader className={`${headerBg} text-white relative`}>
+                      <div className="absolute inset-0 bg-gradient-to-br from-black/10 to-black/20"></div>
+                      <div className="relative z-10">
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="text-lg font-semibold">{userPlan.plan.name}</CardTitle>
+                          {userPlan.plan.badge && (
+                            <Badge className="bg-yellow-400/90 text-yellow-900 font-semibold border-0">
+                              {userPlan.plan.badge}
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="text-3xl font-bold mt-2 drop-shadow-sm">
+                          ${userPlan.plan.amount ? parseFloat(userPlan.plan.amount).toLocaleString() : '0'}
+                        </div>
                       </div>
                     </CardHeader>
                     
                     <CardContent className="p-6">
                       <div className="space-y-4">
                         {/* Payment Status */}
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">Payment:</span>
-                          <Badge className={`${getVerifiedColor(userPlan.verified)} flex items-center gap-1`}>
-                            {getVerifiedIcon(userPlan.verified)}
-                            {(() => {
-                              if (!userPlan.verified || userPlan.verified === '') return 'Pending';
-                              if (typeof userPlan.verified === 'string') {
-                                return userPlan.verified.charAt(0).toUpperCase() + userPlan.verified.slice(1);
-                              }
-                              return 'Unknown';
-                            })()}
+                        <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Payment Status:</span>
+                          <Badge className={`${
+                            isApproved ? 'bg-green-100 text-green-800 border-green-200' : 
+                            isPending ? 'bg-orange-100 text-orange-800 border-orange-200' : 
+                            'bg-red-100 text-red-800 border-red-200'
+                          } flex items-center gap-1 px-3 py-1 font-medium`}>
+                            {isApproved ? <CheckCircle className="w-4 h-4" /> : 
+                             isPending ? <Clock className="w-4 h-4" /> : 
+                             <XCircle className="w-4 h-4" />}
+                            {isApproved ? 'Approved' : isPending ? 'Pending' : 'Rejected'}
                           </Badge>
                         </div>
 
                         {/* Purchase Date */}
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">Purchased:</span>
-                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                        <div className="flex items-center justify-between p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+                          <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Purchased:</span>
+                          <div className="flex items-center gap-2 text-sm font-medium text-blue-800 dark:text-blue-200">
                             <Calendar className="w-4 h-4" />
                             {formatDate(userPlan.purchaseDate)}
                           </div>
@@ -219,9 +217,9 @@ const MyPlansPage = () => {
 
                         {/* Expiry Date */}
                         {userPlan.expiryDate && (
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium">Expires:</span>
-                            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                          <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20">
+                            <span className="text-sm font-medium text-purple-700 dark:text-purple-300">Expires:</span>
+                            <div className="flex items-center gap-2 text-sm font-medium text-purple-800 dark:text-purple-200">
                               <Clock className="w-4 h-4" />
                               {formatDate(userPlan.expiryDate)}
                             </div>
@@ -229,9 +227,9 @@ const MyPlansPage = () => {
                         )}
 
                         {/* Purchase Price */}
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">Paid:</span>
-                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                        <div className="flex items-center justify-between p-3 rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+                          <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">Amount Paid:</span>
+                          <div className="flex items-center gap-2 text-sm font-bold text-emerald-800 dark:text-emerald-200">
                             <DollarSign className="w-4 h-4" />
                             ${userPlan.purchasePrice ? parseFloat(userPlan.purchasePrice).toFixed(2) : '0.00'}
                           </div>
@@ -252,19 +250,7 @@ const MyPlansPage = () => {
                           </div>
                         )}
 
-                        {/* Actions */}
-                        {userPlan.verified && userPlan.verified.toLowerCase() === 'verified' && (
-                          <div className="border-t pt-4">
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              className="w-full text-red-600 hover:text-red-700 hover:bg-red-50"
-                              onClick={() => handleCancelPlan(userPlan.id)}
-                            >
-                              Cancel Plan
-                            </Button>
-                          </div>
-                        )}
+
                       </div>
                     </CardContent>
                   </Card>
