@@ -1,9 +1,14 @@
 import axios from 'axios';
 
 // Use VITE_API_URL for the full backend URL, then append /api
-const API_BASE_URL = import.meta.env.VITE_API_URL 
-  ? `${import.meta.env.VITE_API_URL}/api`
-  : 'http://localhost:3000/api';
+// Avoid falling back to localhost in production builds hosted on Render/Vercel
+const resolvedBackendUrl = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' && window.location?.origin?.includes('localhost')
+  ? 'http://localhost:3000'
+  : undefined);
+
+const API_BASE_URL = resolvedBackendUrl
+  ? `${resolvedBackendUrl}/api`
+  : 'https://gold-carnival-backend-hnaf.onrender.com/api';
 
 console.log('🔗 API Base URL:', API_BASE_URL);
 

@@ -3,10 +3,22 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const redisClient = createClient({
-  url: `redis://${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || 6379}`,
-  password: process.env.REDIS_PASSWORD || undefined
-});
+// Prefer REDIS_URL when available (Render/Aiven/etc). Fallback to host/port if provided.
+const inferredRedisUrl = process.env.REDIS_URL
+  || (process.env.REDIS_HOST ? `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT || 6379}` : undefined);
+
+// Create a lazy client. If no configuration is present, create a dummy client interface
+// so imports won't fail and server can start without Redis.
+export const redisClient = inferredRedisUrl
+  ? createClient({
+      url: inferredRedisUrl,
+      password: process.env.REDIS_PASSWORD || undefined
+    })
+  : createClient({
+      // Intentionally invalid URL to prevent accidental localhost connection on Render
+      // We'll skip connecting when no config is provided.
+      url: 'redis://unused:0'
+    });
 
 redisClient.on('error', (err) => {
   console.error('❌ Redis Client Error:', err);
@@ -20,10 +32,17 @@ redisClient.on('ready', () => {
   console.log('✅ Redis Client Ready');
 });
 
-// Connect to Redis
+// Connect to Redis (only when configuration exists)
 export const connectRedis = async () => {
+  const hasConfig = Boolean(process.env.REDIS_URL || process.env.REDIS_HOST);
+  if (!hasConfig) {
+    console.log('ℹ️ Redis not configured. Skipping connectRedis.');
+    return;
+  }
   try {
-    await redisClient.connect();
+    if (!redisClient.isOpen) {
+      await redisClient.connect();
+    }
     console.log('✅ Redis connection established successfully.');
   } catch (error) {
     console.error('❌ Redis connection failed:', error);

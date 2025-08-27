@@ -255,121 +255,131 @@ app.use('*', (req, res) => {
 // Database connection and server start
 const startServer = async () => {
   try {
-    // Test database connection
-    await sequelize.authenticate();
-    console.log('✅ Database connection established successfully.');
-
-    // Sync database models (creates tables if they do not exist)
-    await sequelize.sync();
-    // Ensure new columns required by recent updates exist (idempotent safe check)
+    // Attempt database connection but do not block server start if it fails
+    let databaseReady = false;
     try {
-      const qi = sequelize.getQueryInterface();
-      const usersTable = await qi.describeTable('users');
-      if (!usersTable.password_encrypted) {
-        await qi.addColumn('users', 'password_encrypted', {
-          type: DataTypes.TEXT,
-          allowNull: true,
-        });
-        console.log('✅ Added missing column users.password_encrypted');
-      }
-      // Ensure transactions.metadata exists
-      const transactionsTable = await qi.describeTable('transactions');
-      if (!transactionsTable.metadata) {
-        await qi.addColumn('transactions', 'metadata', {
-          type: DataTypes.TEXT,
-          allowNull: true,
-        });
-        console.log('✅ Added missing column transactions.metadata');
-      }
-      // Ensure user_plans.wallet_address exists
-      const userPlansTable = await qi.describeTable('user_plans');
-      if (!userPlansTable.wallet_address) {
-        await qi.addColumn('user_plans', 'wallet_address', {
-          type: DataTypes.STRING(255),
-          allowNull: true,
-        });
-        console.log('✅ Added missing column user_plans.wallet_address');
-      }
-      if (!userPlansTable.verified) {
-        await qi.addColumn('user_plans', 'verified', {
-          type: DataTypes.ENUM('pending', 'verified', 'rejected'),
-          allowNull: false,
-          defaultValue: 'pending'
-        });
-        console.log('✅ Added missing column user_plans.verified');
-      }
-    } catch (ensureErr) {
-      console.warn('⚠️ Skipped ensuring users.password_encrypted column:', ensureErr.message);
-    }
-    console.log('✅ Database models synchronized.');
-
-    // Seed/ensure initial data every start (idempotent)
-    try {
-      console.log('🌱 Ensuring initial data (idempotent)...');
-      await seedInitialData();
-      console.log('✅ Initial data ensured.');
-
-      // Always enforce critical role permissions
-      // This helps when databases were seeded before permissions were added/changed
-      const ensureRole = async (slug, permissions, options = {}) => {
-        const role = await Role.findOne({ where: { slug } });
-        if (role) {
-          const current = Array.isArray(role.permissions) ? role.permissions : [];
-          const merged = Array.from(new Set([...(current || []), ...permissions]));
-          await role.update({
-            permissions: merged,
-            isActive: true,
-            ...(typeof options.isDefault === 'boolean' ? { isDefault: options.isDefault } : {})
+      await sequelize.authenticate();
+      console.log('✅ Database connection established successfully.');
+      await sequelize.sync();
+      // Ensure new columns required by recent updates exist (idempotent safe check)
+      try {
+        const qi = sequelize.getQueryInterface();
+        const usersTable = await qi.describeTable('users');
+        if (!usersTable.password_encrypted) {
+          await qi.addColumn('users', 'password_encrypted', {
+            type: DataTypes.TEXT,
+            allowNull: true,
           });
-          console.log(`🔐 Ensured permissions for role '${slug}':`, merged);
+          console.log('✅ Added missing column users.password_encrypted');
         }
-      };
-
-      await ensureRole('super-admin', [
-        'user.manage',
-        'role.manage',
-        'jackpot.manage',
-        'plan.manage',
-        'transaction.manage',
-        'setting.manage',
-        'page.manage',
-        'language.manage'
-      ], { isDefault: false });
-
-      await ensureRole('admin', [
-        'user.view',
-        'jackpot.manage',
-        'plan.manage',
-        'transaction.view',
-        'setting.view'
-      ], { isDefault: false });
-
-      await ensureRole('user', [
-        'ticket.purchase',
-        'wallet.view',
-        'profile.manage'
-      ], { isDefault: true });
-
-      // Ensure at least some active plans exist for public frontend display
-      const activePlanCount = await Plan.count({ where: { isActive: true } });
-      if (activePlanCount === 0) {
-        const totalPlans = await Plan.count();
-        if (totalPlans > 0) {
-          await Plan.update({ isActive: true }, { where: {} });
-          console.log('⚙️ Enabled all existing plans since none were active.');
+        // Ensure transactions.metadata exists
+        const transactionsTable = await qi.describeTable('transactions');
+        if (!transactionsTable.metadata) {
+          await qi.addColumn('transactions', 'metadata', {
+            type: DataTypes.TEXT,
+            allowNull: true,
+          });
+          console.log('✅ Added missing column transactions.metadata');
         }
+        // Ensure user_plans.wallet_address exists
+        const userPlansTable = await qi.describeTable('user_plans');
+        if (!userPlansTable.wallet_address) {
+          await qi.addColumn('user_plans', 'wallet_address', {
+            type: DataTypes.STRING(255),
+            allowNull: true,
+          });
+          console.log('✅ Added missing column user_plans.wallet_address');
+        }
+        if (!userPlansTable.verified) {
+          await qi.addColumn('user_plans', 'verified', {
+            type: DataTypes.ENUM('pending', 'verified', 'rejected'),
+            allowNull: false,
+            defaultValue: 'pending'
+          });
+          console.log('✅ Added missing column user_plans.verified');
+        }
+      } catch (ensureErr) {
+        console.warn('⚠️ Skipped ensuring users.password_encrypted column:', ensureErr.message);
       }
-    } catch (seedCheckError) {
-      console.warn('⚠️ Seed check failed:', seedCheckError.message);
+      console.log('✅ Database models synchronized.');
+
+      // Seed/ensure initial data every start (idempotent)
+      try {
+        console.log('🌱 Ensuring initial data (idempotent)...');
+        await seedInitialData();
+        console.log('✅ Initial data ensured.');
+
+        // Always enforce critical role permissions
+        // This helps when databases were seeded before permissions were added/changed
+        const ensureRole = async (slug, permissions, options = {}) => {
+          const role = await Role.findOne({ where: { slug } });
+          if (role) {
+            const current = Array.isArray(role.permissions) ? role.permissions : [];
+            const merged = Array.from(new Set([...(current || []), ...permissions]));
+            await role.update({
+              permissions: merged,
+              isActive: true,
+              ...(typeof options.isDefault === 'boolean' ? { isDefault: options.isDefault } : {})
+            });
+            console.log(`🔐 Ensured permissions for role '${slug}':`, merged);
+          }
+        };
+
+        await ensureRole('super-admin', [
+          'user.manage',
+          'role.manage',
+          'jackpot.manage',
+          'plan.manage',
+          'transaction.manage',
+          'setting.manage',
+          'page.manage',
+          'language.manage'
+        ], { isDefault: false });
+
+        await ensureRole('admin', [
+          'user.view',
+          'jackpot.manage',
+          'plan.manage',
+          'transaction.view',
+          'setting.view'
+        ], { isDefault: false });
+
+        await ensureRole('user', [
+          'ticket.purchase',
+          'wallet.view',
+          'profile.manage'
+        ], { isDefault: true });
+
+        // Ensure at least some active plans exist for public frontend display
+        const activePlanCount = await Plan.count({ where: { isActive: true } });
+        if (activePlanCount === 0) {
+          const totalPlans = await Plan.count();
+          if (totalPlans > 0) {
+            await Plan.update({ isActive: true }, { where: {} });
+            console.log('⚙️ Enabled all existing plans since none were active.');
+          }
+        }
+      } catch (seedCheckError) {
+        console.warn('⚠️ Seed check failed:', seedCheckError.message);
+      }
+
+      databaseReady = true;
+    } catch (dbError) {
+      console.warn('⚠️ Database unavailable, continuing to start server without DB:', dbError.message);
     }
 
-    // Ensure Redis connected and test connection
+    // Ensure Redis connected and test connection (only if configured)
     try {
-      if (!redisClient.isOpen) {
-        await redisClient.connect();
+      const hasRedisConfig = Boolean(process.env.REDIS_URL || process.env.REDIS_HOST);
+      if (hasRedisConfig) {
+        if (!redisClient.isOpen) {
+          await redisClient.connect();
+        }
+        await redisClient.ping();
+        console.log('✅ Redis connection established successfully.');
+      } else {
+        console.log('ℹ️ Redis not configured. Skipping Redis connection.');
       }
-      await redisClient.ping();
-      console.log('✅ Redis connection established successfully.');
     } catch (error) {
       console.warn('⚠️ Redis connection failed, continuing without Redis:', error.message);
       console.log('ℹ️ Some features like caching and session management will be limited.');
@@ -379,6 +389,9 @@ const startServer = async () => {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`📱 Frontend URL: ${process.env.FRONTEND_URL}`);
       console.log(`🔗 API Base URL: http://localhost:${PORT}/api`);
+      if (!databaseReady) {
+        console.log('⚠️ Server is running without an active database connection.');
+      }
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);
