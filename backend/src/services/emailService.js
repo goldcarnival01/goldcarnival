@@ -37,7 +37,7 @@ const emailTemplates = {
     `
   }),
   
-  passwordReset: (data) => ({
+  'password-reset': (data) => ({
     subject: 'Password Reset Request',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">

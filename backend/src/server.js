@@ -363,8 +363,11 @@ const startServer = async () => {
       console.warn('⚠️ Seed check failed:', seedCheckError.message);
     }
 
-    // Test Redis connection
+    // Ensure Redis connected and test connection
     try {
+      if (!redisClient.isOpen) {
+        await redisClient.connect();
+      }
       await redisClient.ping();
       console.log('✅ Redis connection established successfully.');
     } catch (error) {
@@ -387,7 +390,13 @@ const startServer = async () => {
 process.on('SIGTERM', async () => {
   console.log('SIGTERM received, shutting down gracefully');
   await sequelize.close();
-  await redisClient.quit();
+  try {
+    if (redisClient?.isOpen) {
+      await redisClient.quit();
+    }
+  } catch (e) {
+    // ignore
+  }
   server.close(() => {
     console.log('Process terminated');
   });

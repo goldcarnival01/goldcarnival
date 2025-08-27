@@ -20,6 +20,7 @@ import ContactPage from "./pages/ContactPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsPage from "./pages/TermsPage";
 import EmailVerificationPage from "./pages/EmailVerificationPage";
+import { PasswordResetRequestPage, PasswordResetPage } from "./pages/PasswordResetPages";
 import CryptoPaymentTestPage from "./pages/CryptoPaymentTestPage";
 import NotFound from "./pages/NotFound";
 import AdminPage from "./pages/AdminPage";
@@ -60,6 +61,8 @@ const AppRoutes = () => {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<LoginPage />} />
       <Route path="/verify-email" element={<EmailVerificationPage />} />
+      <Route path="/forgot-password" element={<PasswordResetRequestPage />} />
+      <Route path="/reset-password" element={<PasswordResetPage />} />
       
       {/* Test route */}
       <Route path="/test-route" element={

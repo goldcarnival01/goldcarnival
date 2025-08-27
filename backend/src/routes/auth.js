@@ -332,7 +332,13 @@ router.post('/forgot-password', [
   const resetToken = uuidv4();
   const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
 
-  // Store reset token in Redis
+  // Ensure redis is connected and store reset token
+  try {
+    if (!redisClient.isOpen) {
+      await redisClient.connect();
+    }
+  } catch (e) {}
+
   await redisClient.setEx(`reset:${resetToken}`, 3600, JSON.stringify({
     userId: user.id,
     email: user.email
@@ -378,7 +384,13 @@ router.post('/reset-password', [
 
   const { token, password } = req.body;
 
-  // Get reset token data from Redis
+  // Ensure redis is connected and get reset token data
+  try {
+    if (!redisClient.isOpen) {
+      await redisClient.connect();
+    }
+  } catch (e) {}
+
   const resetData = await redisClient.get(`reset:${token}`);
   if (!resetData) {
     return res.status(400).json({
@@ -401,8 +413,10 @@ router.post('/reset-password', [
   user.passwordHash = password; // Will be hashed by model hook
   await user.save();
 
-  // Delete reset token
-  await redisClient.del(`reset:${token}`);
+  // Delete reset token (best-effort)
+  try {
+    await redisClient.del(`reset:${token}`);
+  } catch (e) {}
 
   res.json({
     message: 'Password reset successfully'

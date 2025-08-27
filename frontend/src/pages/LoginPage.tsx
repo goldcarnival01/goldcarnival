@@ -155,7 +155,17 @@ const LoginPage = () => {
                     </div>
                   </div>
 
-                  <Button type="submit" variant="gold" className="w-full text-base font-semibold" disabled={loading}>
+                  <div className="flex items-center justify-between">
+                    <button
+                      type="button"
+                      className="text-sm text-muted-foreground hover:text-primary underline"
+                      onClick={() => navigate('/forgot-password')}
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+
+                  <Button type="submit" variant="gold" className="w-full text-base font-semibold mt-2" disabled={loading}>
                     {loading ? "Please wait..." : "SIGN IN"}
                   </Button>
                 </form>
