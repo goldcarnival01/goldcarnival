@@ -11,7 +11,7 @@ import { Eye } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { plansAPI, walletAPI } from "@/services/api";
-import { toast } from "@/hooks/use-toast";
+import qrImage from "@/assets/qr.jpg";
 
 const DepositPage = () => {
   const [searchParams] = useSearchParams();
@@ -44,13 +44,6 @@ const DepositPage = () => {
     };
     loadPlanAmount();
   }, [planId]);
-
-  // Prefill the USDT amount with the plan's fixed amount and keep it read-only
-  useEffect(() => {
-    if (fixedAmount !== null) {
-      setUsdtAmount(String(fixedAmount));
-    }
-  }, [fixedAmount]);
 
   // Commented out NOWPayments quick flow per request
   // const handleNowPay = async (currencyCode: string, index: number) => { ... };
@@ -92,14 +85,9 @@ const DepositPage = () => {
         walletAddress: normalizedWallet,
         purchasePrice
       } as any);
+      setShowQr(false);
     } catch (e) {
       // swallow for now
-    } finally {
-      setShowQr(false);
-      toast({
-        title: "Payment submitted",
-        description: "Your plan will be activated within 2hr after payment.",
-      });
     }
   };
   return (
@@ -147,9 +135,9 @@ const DepositPage = () => {
                       />
                       <Label className="text-white/90">Amount (in USDT)</Label>
                       <Input
-                        placeholder="Amount"
+                        placeholder="Enter amount"
                         value={usdtAmount}
-                        readOnly
+                        onChange={(e) => setUsdtAmount(e.target.value)}
                         className="bg-white/10 border-white/20 text-white placeholder:text-white/70"
                       />
                       <Button className="w-full bg-black hover:bg-black/80 text-white" onClick={openQrModal} disabled={!userFromWallet || !usdtAmount}>
@@ -199,15 +187,15 @@ const DepositPage = () => {
 
       {/* QR Modal */}
       <Dialog open={showQr} onOpenChange={setShowQr}>
-        <DialogContent className="sm:max-w-[425px]" onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
+        <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Pay USDT (TRC20)</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-2">
             <div className="flex flex-col items-center gap-3">
-              {/* Simple QR via Google Chart for the wallet address */}
+              {/* Static QR image */}
               <img
-                src={`https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=${encodeURIComponent(RECEIVER_TRON_ADDRESS)}`}
+                src={qrImage}
                 alt="Wallet QR"
                 className="rounded border"
               />
