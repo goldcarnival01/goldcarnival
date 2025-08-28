@@ -113,6 +113,7 @@ const DepositPage = () => {
     }
   }, [fixedAmount]);
 
+  
   // Commented out NOWPayments quick flow per request
   // const handleNowPay = async (currencyCode: string, index: number) => { ... };
 
