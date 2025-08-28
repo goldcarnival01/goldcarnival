@@ -1,11 +1,19 @@
 import { createClient } from 'redis';
 import dotenv from 'dotenv';
 
-dotenv.config();
+// Only load .env locally; on Render/production we rely on platform env vars
+if (process.env.NODE_ENV !== 'production' && !process.env.RENDER) {
+  dotenv.config();
+}
 
 // Prefer REDIS_URL when available (Render/Aiven/etc). Fallback to host/port if provided.
+// On Render/production, ignore localhost Redis settings to avoid accidental 127.0.0.1 connection.
+const isRender = Boolean(process.env.RENDER);
+const isLocalhostRedis = process.env.REDIS_HOST === '127.0.0.1' || process.env.REDIS_HOST === 'localhost';
 const inferredRedisUrl = process.env.REDIS_URL
-  || (process.env.REDIS_HOST ? `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT || 6379}` : undefined);
+  || ((process.env.REDIS_HOST && !(isRender && isLocalhostRedis))
+    ? `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT || 6379}`
+    : undefined);
 
 // Create a lazy client. If no configuration is present, create a dummy client interface
 // so imports won't fail and server can start without Redis.

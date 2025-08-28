@@ -370,7 +370,11 @@ const startServer = async () => {
 
     // Ensure Redis connected and test connection (only if configured)
     try {
-      const hasRedisConfig = Boolean(process.env.REDIS_URL || process.env.REDIS_HOST);
+      const isRender = Boolean(process.env.RENDER);
+      const isLocalhostRedis = process.env.REDIS_HOST === '127.0.0.1' || process.env.REDIS_HOST === 'localhost';
+      const hasRedisConfig = Boolean(
+        process.env.REDIS_URL || (process.env.REDIS_HOST && !(isRender && isLocalhostRedis))
+      );
       if (hasRedisConfig) {
         if (!redisClient.isOpen) {
           await redisClient.connect();
