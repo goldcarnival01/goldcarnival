@@ -17,11 +17,23 @@ export const PasswordResetRequestPage = () => {
     setLoading(true);
     setMessage(null);
     try {
-      await authAPI.forgotPassword(email);
+      // Use a longer-timeout variant to handle cold starts on the server
+      if (authAPI.forgotPasswordLong) {
+        await authAPI.forgotPasswordLong(email);
+      } else {
+        await authAPI.forgotPassword(email);
+      }
       setMessage("If an account with this email exists, a password reset link has been sent.");
       setEmail("");
     } catch (e: any) {
-      setMessage(e?.message || "Failed to send reset link");
+      // If it's just a timeout, treat as success because email may still be queued on server
+      if (e?.code === 'ECONNABORTED' || /timeout/i.test(e?.message || '')) {
+        setMessage("If an account with this email exists, a password reset link has been sent.");
+        setEmail("");
+      } else {
+        const apiMessage = e?.response?.data?.message || e?.message;
+        setMessage(apiMessage || "Failed to send reset link");
+      }
     } finally {
       setLoading(false);
     }

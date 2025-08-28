@@ -348,16 +348,19 @@ router.post('/forgot-password', [
 
   // Ensure redis is connected and store reset token; if unavailable, use in-memory fallback
   let tokenStored = false;
+  const hasRedisConfig = Boolean(process.env.REDIS_URL || process.env.REDIS_HOST);
   try {
-    if (redisClient && !redisClient.isOpen) {
-      await redisClient.connect();
-    }
-    if (redisClient?.isOpen) {
+    if (hasRedisConfig) {
+      if (redisClient && !redisClient.isOpen) {
+        await redisClient.connect();
+      }
+      if (redisClient?.isOpen) {
       await redisClient.setEx(`reset:${resetToken}`, 3600, JSON.stringify({
         userId: user.id,
         email: user.email
       }));
       tokenStored = true;
+      }
     }
   } catch (e) {
     console.warn('⚠️ Redis unavailable for password reset token. Using in-memory fallback.');
@@ -413,11 +416,14 @@ router.post('/reset-password', [
   // Ensure redis is connected and get reset token data; fallback to in-memory
   let resetData = null;
   try {
-    if (redisClient && !redisClient.isOpen) {
-      await redisClient.connect();
-    }
-    if (redisClient?.isOpen) {
+    const hasRedisConfig = Boolean(process.env.REDIS_URL || process.env.REDIS_HOST);
+    if (hasRedisConfig) {
+      if (redisClient && !redisClient.isOpen) {
+        await redisClient.connect();
+      }
+      if (redisClient?.isOpen) {
       resetData = await redisClient.get(`reset:${token}`);
+      }
     }
   } catch (e) {}
 
