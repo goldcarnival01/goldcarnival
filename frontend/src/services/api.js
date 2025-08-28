@@ -187,6 +187,7 @@ export const adminAPI = {
   getUsers: (params) => api.get('/admin/users', { params }),
   getUser: (id) => api.get(`/admin/users/${id}`),
   updateUserStatus: (id, status) => api.patch(`/admin/users/${id}/status`, { status }),
+  verifyUser: (id) => api.post(`/admin/users/${id}/verify`),
   createUser: (data) => api.post('/admin/users', data),
   updateUser: (id, data) => api.put(`/admin/users/${id}`, data),
   resetUserPassword: (id, newPassword) => api.post(`/admin/users/${id}/reset-password`, newPassword ? { newPassword } : {}),

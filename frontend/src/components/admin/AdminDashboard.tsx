@@ -90,16 +90,16 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 p-3 sm:p-0">
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-6">
+            <CardTitle className="text-xs sm:text-sm font-medium">Total Users</CardTitle>
+            <Users className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalUsers.toLocaleString()}</div>
+          <CardContent className="p-3 sm:p-6 pt-0">
+            <div className="text-lg sm:text-2xl font-bold">{stats.totalUsers.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
               <TrendingUp className="inline h-3 w-3 text-green-500" /> +12% from last month
             </p>
@@ -107,12 +107,12 @@ const AdminDashboard = () => {
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-6">
+            <CardTitle className="text-xs sm:text-sm font-medium">Total Revenue</CardTitle>
+            <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">${stats.totalRevenue.toLocaleString()}</div>
+          <CardContent className="p-3 sm:p-6 pt-0">
+            <div className="text-lg sm:text-2xl font-bold">${stats.totalRevenue.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
               <TrendingUp className="inline h-3 w-3 text-green-500" /> +8% from last month
             </p>
@@ -120,12 +120,12 @@ const AdminDashboard = () => {
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Jackpots</CardTitle>
-            <Trophy className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-6">
+            <CardTitle className="text-xs sm:text-sm font-medium">Active Jackpots</CardTitle>
+            <Trophy className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.activeJackpots}</div>
+          <CardContent className="p-3 sm:p-6 pt-0">
+            <div className="text-lg sm:text-2xl font-bold">{stats.activeJackpots}</div>
             <p className="text-xs text-muted-foreground">
               Out of {stats.totalJackpots} total jackpots
             </p>
@@ -133,12 +133,12 @@ const AdminDashboard = () => {
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Transactions</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-6">
+            <CardTitle className="text-xs sm:text-sm font-medium">Pending Transactions</CardTitle>
+            <Activity className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.pendingTransactions}</div>
+          <CardContent className="p-3 sm:p-6 pt-0">
+            <div className="text-lg sm:text-2xl font-bold">{stats.pendingTransactions}</div>
             <p className="text-xs text-muted-foreground">
               Require attention
             </p>
@@ -148,26 +148,26 @@ const AdminDashboard = () => {
 
       {/* Quick Actions */}
       <Card>
-        <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-base sm:text-lg">Quick Actions</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
-              <Trophy className="h-6 w-6" />
-              <span>Create Jackpot</span>
+        <CardContent className="p-3 sm:p-6 pt-0">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <Button variant="outline" className="h-auto p-3 sm:p-4 flex flex-col items-center gap-2">
+              <Trophy className="h-4 w-4 sm:h-6 sm:w-6" />
+              <span className="text-xs sm:text-sm">Create Jackpot</span>
             </Button>
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
-              <Users className="h-6 w-6" />
-              <span>Manage Users</span>
+            <Button variant="outline" className="h-auto p-3 sm:p-4 flex flex-col items-center gap-2">
+              <Users className="h-4 w-4 sm:h-6 sm:w-6" />
+              <span className="text-xs sm:text-sm">Manage Users</span>
             </Button>
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
-              <Wallet className="h-6 w-6" />
-              <span>Process Payments</span>
+            <Button variant="outline" className="h-auto p-3 sm:p-4 flex flex-col items-center gap-2">
+              <Wallet className="h-4 w-4 sm:h-6 sm:w-6" />
+              <span className="text-xs sm:text-sm">Process Payments</span>
             </Button>
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
-              <Settings className="h-6 w-6" />
-              <span>System Settings</span>
+            <Button variant="outline" className="h-auto p-3 sm:p-4 flex flex-col items-center gap-2">
+              <Settings className="h-4 w-4 sm:h-6 sm:w-6" />
+              <span className="text-xs sm:text-sm">System Settings</span>
             </Button>
           </div>
         </CardContent>
@@ -175,20 +175,20 @@ const AdminDashboard = () => {
 
       {/* Recent Activity */}
       <Card>
-        <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-base sm:text-lg">Recent Activity</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+        <CardContent className="p-3 sm:p-6 pt-0">
+          <div className="space-y-3 sm:space-y-4">
             {stats.recentActivity.map((activity) => (
-              <div key={activity.id} className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="flex items-center gap-3">
-                  <Badge variant="secondary" className="capitalize">
+              <div key={activity.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 border rounded-lg gap-2 sm:gap-3">
+                <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                  <Badge variant="secondary" className="capitalize text-xs flex-shrink-0">
                     {activity.type.replace('_', ' ')}
                   </Badge>
-                  <span className="text-sm">{activity.message}</span>
+                  <span className="text-xs sm:text-sm truncate">{activity.message}</span>
                 </div>
-                <span className="text-xs text-muted-foreground">{activity.time}</span>
+                <span className="text-xs text-muted-foreground flex-shrink-0 self-start sm:self-auto">{activity.time}</span>
               </div>
             ))}
           </div>

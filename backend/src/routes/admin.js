@@ -432,6 +432,29 @@ router.patch('/users/:id/status', requireAdmin, [
   });
 }));
 
+// Verify user (set status=active and emailVerified=true)
+router.post('/users/:id/verify', requireAdmin, asyncHandler(async (req, res) => {
+  const user = await User.findByPk(req.params.id);
+  if (!user) {
+    return res.status(404).json({
+      error: 'User Not Found',
+      message: 'User does not exist'
+    });
+  }
+
+  await user.update({
+    status: 'active',
+    emailVerified: true,
+    emailVerificationToken: null,
+    emailVerificationExpires: null
+  });
+
+  res.json({
+    message: 'User verified successfully',
+    user: user.toJSON()
+  });
+}));
+
 // ==================== JACKPOTS MANAGEMENT ====================
 
 // Get all jackpots with pagination and filters

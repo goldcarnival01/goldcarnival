@@ -129,12 +129,12 @@ const AdminUsers = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 p-3 sm:p-0">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
         <div>
-          <h2 className="text-2xl font-bold">Users Management</h2>
-          <p className="text-muted-foreground">Manage user accounts and permissions</p>
+          <h2 className="text-xl sm:text-2xl font-bold">Users Management</h2>
+          <p className="text-sm sm:text-base text-muted-foreground">Manage user accounts and permissions</p>
         </div>
         <Dialog open={showUserDialog} onOpenChange={(open) => { 
           setShowUserDialog(open); 
@@ -157,14 +157,15 @@ const AdminUsers = () => {
               setCurrentPassword("");
               setViewToken("");
               setRevealedPassword(null);
-            }}>
+            }} className="w-full sm:w-auto">
               <Plus className="w-4 h-4 mr-2" />
-              Add User
+              <span className="hidden sm:inline">Add User</span>
+              <span className="sm:hidden">Add</span>
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-md mx-4 sm:mx-auto">
             <DialogHeader>
-              <DialogTitle>{selectedUser ? "Edit User" : "Add User"}</DialogTitle>
+              <DialogTitle className="text-lg">{selectedUser ? "Edit User" : "Add User"}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               <div>
@@ -315,11 +316,11 @@ const AdminUsers = () => {
 
       {/* Filters */}
       <Card>
-        <CardContent className="pt-6">
-          <div className="flex flex-col sm:flex-row gap-4">
+        <CardContent className="pt-4 sm:pt-6 p-3 sm:p-6">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-              <Input placeholder="Search users..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-10" />
+              <Input placeholder="Search users..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-10 text-sm" />
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-full sm:w-48">
@@ -338,72 +339,73 @@ const AdminUsers = () => {
 
       {/* Users Table */}
       <Card>
-        <CardHeader>
-          <CardTitle>Users ({filteredUsers.length})</CardTitle>
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-base sm:text-lg">Users ({filteredUsers.length})</CardTitle>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Member ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Referred By</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Joined</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredUsers.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell className="font-mono text-sm">{user.memberId}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <User className="w-4 h-4 text-muted-foreground" />
-                      {user.firstName} {user.lastName}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-muted-foreground" />
-                      {user.email}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {user.referrer ? `${user.referrer.memberId}` : '-'}
-                  </TableCell>
-                  <TableCell>{getStatusBadge(user.status)}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Shield className="w-4 h-4 text-muted-foreground" />
-                      {user.role?.name || user.roleName || 'User'}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-muted-foreground" />
-                      {new Date(user.createdAt).toLocaleDateString()}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Button variant="ghost" size="sm" title="View Plans" onClick={() => navigate(`/admin/users/${user.id}/plans`)}>
-                        <Package className="w-4 h-4" />
-                      </Button>
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-2xl">
-                          <DialogHeader>
-                            <DialogTitle>User Details</DialogTitle>
-                          </DialogHeader>
-                          <div className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
+        <CardContent className="p-0 sm:p-6">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="min-w-[120px]">Member ID</TableHead>
+                  <TableHead className="min-w-[150px]">Name</TableHead>
+                  <TableHead className="min-w-[200px]">Email</TableHead>
+                  <TableHead className="min-w-[120px]">Referred By</TableHead>
+                  <TableHead className="min-w-[80px]">Status</TableHead>
+                  <TableHead className="min-w-[80px]">Role</TableHead>
+                  <TableHead className="min-w-[100px]">Joined</TableHead>
+                  <TableHead className="min-w-[200px]">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredUsers.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell className="font-mono text-xs sm:text-sm p-2 sm:p-4">{user.memberId}</TableCell>
+                    <TableCell className="p-2 sm:p-4">
+                      <div className="flex items-center gap-2">
+                        <User className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" />
+                        <span className="text-xs sm:text-sm truncate">{user.firstName} {user.lastName}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="p-2 sm:p-4">
+                      <div className="flex items-center gap-2">
+                        <Mail className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" />
+                        <span className="text-xs sm:text-sm truncate">{user.email}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="p-2 sm:p-4 text-xs sm:text-sm">
+                      {user.referrer ? `${user.referrer.memberId}` : '-'}
+                    </TableCell>
+                    <TableCell className="p-2 sm:p-4">{getStatusBadge(user.status)}</TableCell>
+                    <TableCell className="p-2 sm:p-4">
+                      <div className="flex items-center gap-2">
+                        <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" />
+                        <span className="text-xs sm:text-sm truncate">{user.role?.name || user.roleName || 'User'}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="p-2 sm:p-4">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" />
+                        <span className="text-xs sm:text-sm">{new Date(user.createdAt).toLocaleDateString()}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="p-2 sm:p-4">
+                      <div className="flex items-center gap-1 sm:gap-2">
+                        <Button variant="ghost" size="sm" title="View Plans" onClick={() => navigate(`/admin/users/${user.id}/plans`)}>
+                          <Package className="w-3 h-3 sm:w-4 sm:h-4" />
+                        </Button>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-2xl mx-4 sm:mx-auto">
+                            <DialogHeader>
+                              <DialogTitle className="text-lg">User Details</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                               <div>
                                 <label className="text-sm font-medium">Member ID</label>
                                 <p className="text-sm text-muted-foreground">{user.memberId}</p>
@@ -428,52 +430,70 @@ const AdminUsers = () => {
                                 <label className="text-sm font-medium">Email Verified</label>
                                 <Badge variant={user.emailVerified ? "default" : "secondary"}>{user.emailVerified ? "Yes" : "No"}</Badge>
                               </div>
-                              <div className="col-span-2">
-                                <label className="text-sm font-medium">Password</label>
-                                <div className="flex items-center gap-2 mt-1">
-                                  <Button variant="outline" size="sm" onClick={async ()=>{
-                                    try {
-                                      const res = await adminAPI.viewUserPasswordSimple(user.id);
-                                      const pwd = res.data?.password;
-                                      if (pwd) {
-                                        await navigator.clipboard.writeText(pwd);
-                                        alert(`Password: ${pwd} (copied to clipboard)`);
+                                <div className="col-span-full">
+                                  <label className="text-sm font-medium">Password</label>
+                                  <div className="flex items-center gap-2 mt-1">
+                                    <Button variant="outline" size="sm" onClick={async ()=>{
+                                      try {
+                                        const res = await adminAPI.viewUserPasswordSimple(user.id);
+                                        const pwd = res.data?.password;
+                                        if (pwd) {
+                                          await navigator.clipboard.writeText(pwd);
+                                          alert(`Password: ${pwd} (copied to clipboard)`);
+                                        }
+                                      } catch (e:any) {
+                                        alert(e.response?.data?.message || 'Failed to view password');
                                       }
-                                    } catch (e:any) {
-                                      alert(e.response?.data?.message || 'Failed to view password');
-                                    }
-                                  }}>View Password</Button>
+                                    }}>View Password</Button>
+                                  </div>
                                 </div>
-                              </div>
                             </div>
                           </div>
                         </DialogContent>
                       </Dialog>
-                      
-                      <Button variant="ghost" size="sm" onClick={() => { 
-                        setSelectedUser(user); 
-                        setForm({ email: user.email, password: "", firstName: user.firstName || "", lastName: user.lastName || "", phone: user.phone || "", status: user.status, roleId: user.role?.id }); 
-                        setShowPassword(false);
-                        setShowChangePassword(false);
-                        setCurrentPassword("");
-                        setShowUserDialog(true); 
-                      }}>
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="ghost" size="sm" className="text-destructive" title="Delete User">
-                            <Trash2 className="w-4 h-4" />
+                        {user.status !== 'active' && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-xs px-2"
+                            onClick={async () => {
+                              try {
+                                await adminAPI.verifyUser(user.id);
+                                await fetchUsers();
+                              } catch (e) {
+                                console.error('Verify user failed', e);
+                              }
+                            }}
+                          >
+                            <span className="hidden sm:inline">Verify</span>
+                            <span className="sm:hidden">✓</span>
                           </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete this user permanently?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              This action cannot be undone. This will permanently delete the user account,
-                              wallets, transactions, tickets and related data.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
+                        )}
+                        
+                        <Button variant="ghost" size="sm" onClick={() => { 
+                          setSelectedUser(user); 
+                          setForm({ email: user.email, password: "", firstName: user.firstName || "", lastName: user.lastName || "", phone: user.phone || "", status: user.status, roleId: user.role?.id }); 
+                          setShowPassword(false);
+                          setShowChangePassword(false);
+                          setCurrentPassword("");
+                          setShowUserDialog(true); 
+                        }}>
+                          <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="sm" className="text-destructive" title="Delete User">
+                              <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent className="mx-4 sm:mx-auto">
+                            <AlertDialogHeader>
+                              <AlertDialogTitle className="text-base sm:text-lg">Delete this user permanently?</AlertDialogTitle>
+                              <AlertDialogDescription className="text-sm">
+                                This action cannot be undone. This will permanently delete the user account,
+                                wallets, transactions, tickets and related data.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={async () => {
@@ -486,15 +506,16 @@ const AdminUsers = () => {
                             }}>
                               Delete
                             </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

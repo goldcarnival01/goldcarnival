@@ -126,19 +126,19 @@ const DashboardPage = () => {
     <div className="min-h-screen">
       <Header />
       
-      <div className="flex pt-20">
+      <div className="flex flex-col lg:flex-row pt-20">
         <DashboardSidebar />
         
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           {/* Removed Live Draw Timer banner per requirements */}
 
 
 
           {/* Main Content */}
-          <section className="p-6">
-            <div className="container mx-auto">
+          <section className="p-3 sm:p-4 lg:p-6">
+            <div className="container mx-auto max-w-7xl">
               {/* My Plans Grid */}
-              <div className="grid lg:grid-cols-3 gap-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
                 {userPlans.length > 0 ? userPlans.map((userPlan, index) => {
                   const verificationStatus = (userPlan.verified || '').toString().toLowerCase();
                   const isApproved = verificationStatus === 'verified' || verificationStatus === 'approved';
@@ -226,10 +226,10 @@ const DashboardPage = () => {
                   </Card>
                   );
                 }) : (
-                  <div className="col-span-3 text-center py-12">
-                    <div className="text-6xl mb-4">📦</div>
-                    <h3 className="text-xl font-semibold text-foreground mb-2">No Plans Yet!</h3>
-                    <p className="text-muted-foreground mb-4">You haven't purchased any plans yet. Browse our available plans to get started.</p>
+                  <div className="col-span-full text-center py-8 sm:py-12">
+                    <div className="text-4xl sm:text-6xl mb-4">📦</div>
+                    <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2">No Plans Yet!</h3>
+                    <p className="text-sm sm:text-base text-muted-foreground mb-4 px-4">You haven't purchased any plans yet. Browse our available plans to get started.</p>
                     <Button 
                       className="gradient-gold text-primary-foreground hover:opacity-90"
                       onClick={() => navigate('/')}
@@ -241,32 +241,34 @@ const DashboardPage = () => {
               </div>
 
               {/* Quick Links */}
-              <div className="mb-8">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-semibold text-foreground">QUICK LINKS</h3>
-                  <Button variant="ghost" size="sm" className="text-primary" onClick={() => navigate('/dashboard/deposit')}>
-                    UPDATE PROFILE <ChevronRight className="w-4 h-4 ml-1" />
+              <div className="mb-6 sm:mb-8">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2">
+                  <h3 className="text-lg sm:text-xl font-semibold text-foreground">QUICK LINKS</h3>
+                  <Button variant="ghost" size="sm" className="text-primary self-start sm:self-auto" onClick={() => navigate('/dashboard/deposit')}>
+                    <span className="hidden sm:inline">UPDATE PROFILE</span>
+                    <span className="sm:hidden">PROFILE</span>
+                    <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
                 </div>
                 
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                   {quickLinks.map((link, index) => (
                     <Card 
                       key={index} 
-                      className={`${link.color} p-6 text-white hover:opacity-90 transition-opacity cursor-pointer`}
+                      className={`${link.color} p-4 sm:p-6 text-white hover:opacity-90 transition-opacity cursor-pointer`}
                       onClick={() => navigate(link.path)}
                     >
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
-                            <link.icon className="w-6 h-6 text-black" />
+                        <div className="flex items-center space-x-3 sm:space-x-4">
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <link.icon className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
                           </div>
-                          <div>
-                            <h4 className="font-semibold">{link.title}</h4>
-                            <p className="text-sm text-gray-300">{link.subtitle}</p>
+                          <div className="min-w-0">
+                            <h4 className="font-semibold text-sm sm:text-base truncate">{link.title}</h4>
+                            <p className="text-xs sm:text-sm text-gray-300 truncate">{link.subtitle}</p>
                           </div>
                         </div>
-                        <ChevronRight className="w-5 h-5" />
+                        <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
                       </div>
                     </Card>
                   ))}
@@ -274,36 +276,39 @@ const DashboardPage = () => {
               </div>
 
               {/* Referral and Stats Section */}
-              <div className="grid lg:grid-cols-2 gap-8 mt-12">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mt-8 sm:mt-12">
                 {/* Referral Section */}
                 <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold text-foreground">REFERRAL</h3>
-                    <Button variant="ghost" size="sm" className="text-primary" onClick={() => navigate('/dashboard/deposit')}>
-                      REFERRAL REPORT <ChevronRight className="w-4 h-4 ml-1" />
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2">
+                    <h3 className="text-lg sm:text-xl font-semibold text-foreground">REFERRAL</h3>
+                    <Button variant="ghost" size="sm" className="text-primary self-start sm:self-auto" onClick={() => navigate('/dashboard/deposit')}>
+                      <span className="hidden sm:inline">REFERRAL REPORT</span>
+                      <span className="sm:hidden">REPORT</span>
+                      <ChevronRight className="w-4 h-4 ml-1" />
                     </Button>
                   </div>
                   
-                  <Card className="bg-card border-border p-6">
-                    <div className="text-center mb-6">
-                      <h4 className="text-lg font-semibold text-foreground mb-4">REFER A FRIEND PROGRAM</h4>
-                      <p className="text-sm text-muted-foreground mb-6">
+                  <Card className="bg-card border-border p-4 sm:p-6">
+                    <div className="text-center mb-4 sm:mb-6">
+                      <h4 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4">REFER A FRIEND PROGRAM</h4>
+                      <p className="text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6 px-2">
                         Copy and share the below link on your social media platform or email to get more referrals.
                       </p>
                     </div>
                     
-                    <div className="mb-6">
+                    <div className="mb-4 sm:mb-6">
                       <label className="text-sm font-medium text-foreground mb-2 block">Referral Link</label>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                         <input 
                           type="text" 
                           value={referralLink || 'Loading...'}
                           readOnly 
-                          className="flex-1 px-3 py-2 border border-border rounded-md bg-background text-foreground text-sm"
+                          className="flex-1 px-3 py-2 border border-border rounded-md bg-background text-foreground text-xs sm:text-sm min-w-0"
                         />
                         <Button 
                           variant="gold" 
                           size="sm"
+                          className="sm:flex-shrink-0"
                           onClick={() => {
                             if (referralLink) {
                               navigator.clipboard.writeText(referralLink);
@@ -311,14 +316,15 @@ const DashboardPage = () => {
                             }
                           }}
                         >
-                          📋
+                          📋 Copy
                         </Button>
                       </div>
                     </div>
                     
                     <div className="text-center">
-                      <Button variant="gold" className="px-8" onClick={() => navigate('/dashboard/deposit')}>
-                        VIEW REFERRAL BANNERS
+                      <Button variant="gold" className="w-full sm:w-auto px-4 sm:px-8 text-sm" onClick={() => navigate('/dashboard/deposit')}>
+                        <span className="hidden sm:inline">VIEW REFERRAL BANNERS</span>
+                        <span className="sm:hidden">VIEW BANNERS</span>
                       </Button>
                     </div>
                   </Card>
@@ -326,66 +332,66 @@ const DashboardPage = () => {
 
                 {/* My Stats Section */}
                 <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold text-foreground">MY STATS</h3>
-                    <Button variant="ghost" size="sm" className="text-primary" onClick={() => navigate('/dashboard/deposit')}>
-                      VIEW MORE <ChevronRight className="w-4 h-4 ml-1" />
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2">
+                    <h3 className="text-lg sm:text-xl font-semibold text-foreground">MY STATS</h3>
+                    <Button variant="ghost" size="sm" className="text-primary self-start sm:self-auto" onClick={() => navigate('/dashboard/deposit')}>
+                      <span className="hidden sm:inline">VIEW MORE</span>
+                      <span className="sm:hidden">MORE</span>
+                      <ChevronRight className="w-4 h-4 ml-1" />
                     </Button>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4">
-                    <Card className="bg-card border-border p-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
-                          <span className="text-white font-bold text-lg">💰</span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <Card className="bg-card border-border p-3 sm:p-4">
+                      <div className="flex items-center space-x-2 sm:space-x-3">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <span className="text-white font-bold text-sm sm:text-lg">💰</span>
                         </div>
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                           <p className="text-xs text-muted-foreground">Total Deposit</p>
-                          <p className="text-lg font-bold text-foreground">
+                          <p className="text-sm sm:text-lg font-bold text-foreground truncate">
                             ${userStats?.totalDeposit || '0.00'}
                           </p>
                         </div>
                       </div>
                     </Card>
                     
-                    <Card className="bg-card border-border p-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-yellow-500 rounded-lg flex items-center justify-center">
-                          <span className="text-white font-bold text-lg">👥</span>
+                    <Card className="bg-card border-border p-3 sm:p-4">
+                      <div className="flex items-center space-x-2 sm:space-x-3">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-yellow-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <span className="text-white font-bold text-sm sm:text-lg">👥</span>
                         </div>
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                           <p className="text-xs text-muted-foreground">Total Referrals</p>
-                          <p className="text-lg font-bold text-foreground">
+                          <p className="text-sm sm:text-lg font-bold text-foreground truncate">
                             {userStats?.referrals?.total || 0}
                           </p>
                         </div>
                       </div>
                     </Card>
                     
-                    <Card className="bg-card border-border p-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
-                          <span className="text-white font-bold text-lg">💎</span>
+                    <Card className="bg-card border-border p-3 sm:p-4">
+                      <div className="flex items-center space-x-2 sm:space-x-3">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <span className="text-white font-bold text-sm sm:text-lg">💎</span>
                         </div>
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                           <p className="text-xs text-muted-foreground">Total Referral Commission</p>
-                          <p className="text-lg font-bold text-foreground">
+                          <p className="text-sm sm:text-lg font-bold text-foreground truncate">
                             ${userStats?.totalCommission || '0'}
                           </p>
                         </div>
                       </div>
                     </Card>
                     
-                    
-                    
-                    <Card className="bg-card border-border p-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center">
-                          <span className="text-white font-bold text-lg">💳</span>
+                    <Card className="bg-card border-border p-3 sm:p-4">
+                      <div className="flex items-center space-x-2 sm:space-x-3">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <span className="text-white font-bold text-sm sm:text-lg">💳</span>
                         </div>
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                           <p className="text-xs text-muted-foreground">Total Withdraw</p>
-                          <p className="text-lg font-bold text-foreground">
+                          <p className="text-sm sm:text-lg font-bold text-foreground truncate">
                             ${userStats?.totalWithdraw || '0.00'}
                           </p>
                         </div>
