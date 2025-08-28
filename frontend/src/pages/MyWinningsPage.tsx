@@ -228,61 +228,61 @@ const MyWinningsPage = () => {
           </div>
 
           {/* Content */}
-          <section className="p-6">
+          <section className="p-3 sm:p-4 lg:p-6">
             <div className="container mx-auto">
               {/* Summary Cards */}
-              <div className="grid md:grid-cols-3 gap-6 mb-8">
-                <Card className="p-6 bg-gradient-to-br from-green-500 to-green-600 text-white">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                <Card className="p-4 sm:p-6 bg-gradient-to-br from-green-500 to-green-600 text-white">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-green-100 text-sm">Total Plan Earnings</p>
-                      <p className="text-2xl font-bold">${totalPlanEarnings.toFixed(2)}</p>
+                      <p className="text-green-100 text-xs sm:text-sm">Total Plan Earnings</p>
+                      <p className="text-xl sm:text-2xl font-bold">${totalPlanEarnings.toFixed(2)}</p>
                       {predictedPlanEarnings > 0 && (
                         <p className="text-green-200 text-xs mt-1">
                           Tomorrow: +${predictedPlanEarnings.toFixed(2)}
                         </p>
                       )}
                     </div>
-                    <TrendingUp className="w-8 h-8 text-green-200" />
+                    <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-green-200" />
                   </div>
                 </Card>
                 
-                <Card className="p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+                <Card className="p-4 sm:p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-blue-100 text-sm">Total Referral Earnings</p>
-                      <p className="text-2xl font-bold">${totalReferralEarnings.toFixed(2)}</p>
+                      <p className="text-blue-100 text-xs sm:text-sm">Total Referral Earnings</p>
+                      <p className="text-xl sm:text-2xl font-bold">${totalReferralEarnings.toFixed(2)}</p>
                       {predictedReferralEarnings > 0 && (
                         <p className="text-blue-200 text-xs mt-1">
                           Tomorrow: +${predictedReferralEarnings.toFixed(2)}
                         </p>
                       )}
                     </div>
-                    <Users className="w-8 h-8 text-blue-200" />
+                    <Users className="w-6 h-6 sm:w-8 sm:h-8 text-blue-200" />
                   </div>
                 </Card>
                 
-                <Card className="p-6 bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+                <Card className="p-4 sm:p-6 bg-gradient-to-br from-purple-500 to-purple-600 text-white">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-purple-100 text-sm">Grand Total</p>
-                      <p className="text-2xl font-bold">${grandTotal.toFixed(2)}</p>
+                      <p className="text-purple-100 text-xs sm:text-sm">Grand Total</p>
+                      <p className="text-xl sm:text-2xl font-bold">${grandTotal.toFixed(2)}</p>
                       {predictedTotal > 0 && (
                         <p className="text-purple-200 text-xs mt-1">
                           Tomorrow: +${predictedTotal.toFixed(2)}
                         </p>
                       )}
                     </div>
-                    <DollarSign className="w-8 h-8 text-purple-200" />
+                    <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-purple-200" />
                   </div>
                 </Card>
               </div>
 
               {/* Filters */}
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
                 <div className="flex items-center space-x-4">
                   <Select value={selectedFilter} onValueChange={setSelectedFilter}>
-                    <SelectTrigger className="w-40">
+                    <SelectTrigger className="w-full sm:w-40">
                       <SelectValue placeholder="Filter by source" />
                     </SelectTrigger>
                     <SelectContent>
@@ -293,38 +293,24 @@ const MyWinningsPage = () => {
                   </Select>
                 </div>
                 
-                <div className="text-sm text-muted-foreground">
+                <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-right">
                   Showing {paginatedEarnings.length} of {filteredEarnings.length} entries
                 </div>
               </div>
 
-              {/* Earnings Table */}
-              <Card className="bg-card border-border overflow-hidden">
-                <div className="bg-gradient-to-r from-primary to-primary/80 p-4">
-                  <div className="grid grid-cols-6 gap-4 text-primary-foreground font-semibold text-sm">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      DATE
-                    </div>
-                    <div>PLAN EARNINGS</div>
-                    <div>REFERRAL EARNINGS</div>
-                    <div>TOTAL EARNINGS</div>
-                    <div>SOURCE</div>
-                    <div>STATUS</div>
-                  </div>
-                </div>
-                
-                <div className="divide-y divide-border">
-                  {paginatedEarnings.length > 0 ? paginatedEarnings.map((earning, index) => (
-                    <div 
-                      key={`${earning.date}-${index}`} 
-                      className={`grid grid-cols-6 gap-4 p-4 hover:bg-muted/50 transition-colors ${
-                        earning.isPredicted ? 'opacity-60 bg-muted/20' : ''
-                      }`}
-                    >
+              {/* Mobile Card Layout */}
+              <div className="block sm:hidden space-y-4">
+                {paginatedEarnings.length > 0 ? paginatedEarnings.map((earning, index) => (
+                  <Card 
+                    key={`${earning.date}-${index}`} 
+                    className={`bg-card border-border p-4 ${
+                      earning.isPredicted ? 'opacity-60 bg-muted/20' : ''
+                    }`}
+                  >
+                    <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4 text-muted-foreground" />
-                        <span className="font-medium">
+                        <span className="font-medium text-sm">
                           {new Date(earning.date).toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',
@@ -335,91 +321,222 @@ const MyWinningsPage = () => {
                           )}
                         </span>
                       </div>
-                      <div className={`font-medium ${earning.isPredicted ? 'text-green-400' : 'text-green-600'}`}>
-                        ${earning.planEarnings.toFixed(2)}
-                      </div>
-                      <div className={`font-medium ${earning.isPredicted ? 'text-blue-400' : 'text-blue-600'}`}>
-                        ${earning.referralEarnings.toFixed(2)}
-                      </div>
-                      <div className={`font-bold ${earning.isPredicted ? 'text-muted-foreground' : 'text-foreground'}`}>
-                        ${earning.totalEarnings.toFixed(2)}
-                      </div>
-                      <div>
-                        {earning.planName && (
-                          <Badge variant="outline" className="text-xs">
-                            {earning.planName}
-                          </Badge>
-                        )}
-                        {earning.referralEarnings > 0 && earning.planEarnings > 0 && (
-                          <Badge variant="secondary" className="text-xs ml-1">
-                            Mixed
-                          </Badge>
-                        )}
-                        {earning.referralEarnings > 0 && earning.planEarnings === 0 && (
-                          <Badge variant="secondary" className="text-xs">
-                            Referral
-                          </Badge>
-                        )}
-                        {earning.planEarnings > 0 && earning.referralEarnings === 0 && (
-                          <Badge variant="outline" className="text-xs">
-                            Plan
-                          </Badge>
-                        )}
-                      </div>
-                      <div>
-                        {earning.isPredicted ? (
-                          <Badge className="bg-orange-100 text-orange-800 border-orange-200">
-                            Predicted
-                          </Badge>
-                        ) : (
-                          <Badge className="bg-green-100 text-green-800">
-                            Earned
-                          </Badge>
-                        )}
+                      <div className="text-right">
+                        <div className={`text-lg font-bold ${earning.isPredicted ? 'text-muted-foreground' : 'text-foreground'}`}>
+                          ${earning.totalEarnings.toFixed(2)}
+                        </div>
+                        <div className="text-xs">
+                          {earning.isPredicted ? (
+                            <Badge className="bg-orange-100 text-orange-800 border-orange-200 text-xs">
+                              Predicted
+                            </Badge>
+                          ) : (
+                            <Badge className="bg-green-100 text-green-800 text-xs">
+                              Earned
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  )) : (
-                    <div className="p-8 text-center text-muted-foreground">
-                      <TrendingUp className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                      <h3 className="text-lg font-semibold mb-2">No Earnings Yet</h3>
-                      <p className="mb-4">You haven't earned anything yet. Purchase a plan to start earning!</p>
-                      <Button onClick={() => navigate('/dashboard/deposit')}>
-                        Get Started
-                      </Button>
+                    
+                    <div className="space-y-2 text-xs">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Plan Earnings:</span>
+                        <span className={`font-medium ${earning.isPredicted ? 'text-green-400' : 'text-green-600'}`}>
+                          ${earning.planEarnings.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Referral Earnings:</span>
+                        <span className={`font-medium ${earning.isPredicted ? 'text-blue-400' : 'text-blue-600'}`}>
+                          ${earning.referralEarnings.toFixed(2)}
+                        </span>
+                      </div>
+                      {earning.planName && (
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Source:</span>
+                          <div className="flex gap-1">
+                            <Badge variant="outline" className="text-xs">
+                              {earning.planName}
+                            </Badge>
+                            {earning.referralEarnings > 0 && earning.planEarnings > 0 && (
+                              <Badge variant="secondary" className="text-xs">
+                                Mixed
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
+                  </Card>
+                )) : (
+                  <Card className="bg-card border-border p-8 text-center">
+                    <TrendingUp className="w-12 h-12 mx-auto mb-4 opacity-50 text-muted-foreground" />
+                    <h3 className="text-lg font-semibold mb-2">No Earnings Yet</h3>
+                    <p className="text-sm text-muted-foreground mb-4">You haven't earned anything yet. Purchase a plan to start earning!</p>
+                    <Button onClick={() => navigate('/dashboard/deposit')}>
+                      Get Started
+                    </Button>
+                  </Card>
+                )}
                 
-                {/* Pagination */}
+                {/* Mobile Pagination */}
                 {totalPages > 1 && (
-                  <div className="border-t border-border p-4 flex items-center justify-between">
-                    <div className="text-sm text-muted-foreground">
-                      Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filteredEarnings.length)} of {filteredEarnings.length} results
+                  <div className="mt-6 flex flex-col sm:hidden space-y-3">
+                    <div className="text-xs text-muted-foreground text-center">
+                      Page {currentPage} of {totalPages} • {filteredEarnings.length} total results
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center justify-center space-x-2">
                       <Button 
                         variant="outline" 
                         size="sm" 
                         disabled={currentPage === 1}
                         onClick={() => setCurrentPage(currentPage - 1)}
+                        className="text-xs px-3"
                       >
-                        Previous
+                        Prev
                       </Button>
-                      <span className="text-sm text-muted-foreground">
-                        Page {currentPage} of {totalPages}
+                      <span className="text-xs text-muted-foreground px-2">
+                        {currentPage}/{totalPages}
                       </span>
                       <Button 
                         variant="outline" 
                         size="sm" 
                         disabled={currentPage === totalPages}
                         onClick={() => setCurrentPage(currentPage + 1)}
+                        className="text-xs px-3"
                       >
                         Next
                       </Button>
                     </div>
                   </div>
                 )}
-              </Card>
+              </div>
+
+              {/* Desktop Table Layout */}
+              <div className="hidden sm:block">
+                <Card className="bg-card border-border overflow-hidden">
+                  <div className="bg-gradient-to-r from-primary to-primary/80 p-4">
+                    <div className="grid grid-cols-6 gap-4 text-primary-foreground font-semibold text-sm">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4" />
+                        DATE
+                      </div>
+                      <div>PLAN EARNINGS</div>
+                      <div>REFERRAL EARNINGS</div>
+                      <div>TOTAL EARNINGS</div>
+                      <div>SOURCE</div>
+                      <div>STATUS</div>
+                    </div>
+                  </div>
+                  
+                  <div className="divide-y divide-border">
+                    {paginatedEarnings.length > 0 ? paginatedEarnings.map((earning, index) => (
+                      <div 
+                        key={`${earning.date}-${index}`} 
+                        className={`grid grid-cols-6 gap-4 p-4 hover:bg-muted/50 transition-colors ${
+                          earning.isPredicted ? 'opacity-60 bg-muted/20' : ''
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-muted-foreground" />
+                          <span className="font-medium">
+                            {new Date(earning.date).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric'
+                            })}
+                            {earning.isPredicted && (
+                              <span className="text-xs text-muted-foreground ml-2">(Tomorrow)</span>
+                            )}
+                          </span>
+                        </div>
+                        <div className={`font-medium ${earning.isPredicted ? 'text-green-400' : 'text-green-600'}`}>
+                          ${earning.planEarnings.toFixed(2)}
+                        </div>
+                        <div className={`font-medium ${earning.isPredicted ? 'text-blue-400' : 'text-blue-600'}`}>
+                          ${earning.referralEarnings.toFixed(2)}
+                        </div>
+                        <div className={`font-bold ${earning.isPredicted ? 'text-muted-foreground' : 'text-foreground'}`}>
+                          ${earning.totalEarnings.toFixed(2)}
+                        </div>
+                        <div>
+                          {earning.planName && (
+                            <Badge variant="outline" className="text-xs">
+                              {earning.planName}
+                            </Badge>
+                          )}
+                          {earning.referralEarnings > 0 && earning.planEarnings > 0 && (
+                            <Badge variant="secondary" className="text-xs ml-1">
+                              Mixed
+                            </Badge>
+                          )}
+                          {earning.referralEarnings > 0 && earning.planEarnings === 0 && (
+                            <Badge variant="secondary" className="text-xs">
+                              Referral
+                            </Badge>
+                          )}
+                          {earning.planEarnings > 0 && earning.referralEarnings === 0 && (
+                            <Badge variant="outline" className="text-xs">
+                              Plan
+                            </Badge>
+                          )}
+                        </div>
+                        <div>
+                          {earning.isPredicted ? (
+                            <Badge className="bg-orange-100 text-orange-800 border-orange-200">
+                              Predicted
+                            </Badge>
+                          ) : (
+                            <Badge className="bg-green-100 text-green-800">
+                              Earned
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    )) : (
+                      <div className="p-8 text-center text-muted-foreground">
+                        <TrendingUp className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                        <h3 className="text-lg font-semibold mb-2">No Earnings Yet</h3>
+                        <p className="mb-4">You haven't earned anything yet. Purchase a plan to start earning!</p>
+                        <Button onClick={() => navigate('/dashboard/deposit')}>
+                          Get Started
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <div className="border-t border-border p-4 flex items-center justify-between">
+                      <div className="text-sm text-muted-foreground">
+                        Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filteredEarnings.length)} of {filteredEarnings.length} results
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          disabled={currentPage === 1}
+                          onClick={() => setCurrentPage(currentPage - 1)}
+                        >
+                          Previous
+                        </Button>
+                        <span className="text-sm text-muted-foreground">
+                          Page {currentPage} of {totalPages}
+                        </span>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          disabled={currentPage === totalPages}
+                          onClick={() => setCurrentPage(currentPage + 1)}
+                        >
+                          Next
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </Card>
+              </div>
             </div>
           </section>
         </div>
