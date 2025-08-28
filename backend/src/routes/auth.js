@@ -342,25 +342,27 @@ router.post('/forgot-password', [
     });
   }
 
-  // Generate reset token
+  // Generate reset token and persist to user (DB) similar to email verification
   const resetToken = uuidv4();
   const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
-
-  // Ensure redis is connected and store reset token; if unavailable, use in-memory fallback
-  let tokenStored = false;
-  const hasRedisConfig = Boolean(process.env.REDIS_URL || process.env.REDIS_HOST);
   try {
-    if (hasRedisConfig) {
-      if (redisClient && !redisClient.isOpen) {
-        await redisClient.connect();
-      }
-      if (redisClient?.isOpen) {
+    await user.update({
+      passwordResetToken: resetToken,
+      passwordResetExpires: resetTokenExpiry
+    });
+  } catch (e) {
+    console.error('❌ Failed to persist reset token on user:', e?.message);
+  }
+
+  // Store reset token (secondary channel) in Redis only if client is ready, else in-memory
+  let tokenStored = false;
+  try {
+    if (redisClient?.isReady) {
       await redisClient.setEx(`reset:${resetToken}`, 3600, JSON.stringify({
         userId: user.id,
         email: user.email
       }));
       tokenStored = true;
-      }
     }
   } catch (e) {
     console.warn('⚠️ Redis unavailable for password reset token. Using in-memory fallback.');
@@ -413,19 +415,24 @@ router.post('/reset-password', [
 
   const { token, password } = req.body;
 
-  // Ensure redis is connected and get reset token data; fallback to in-memory
+  // Try DB token first (like email verification), then Redis, then in-memory
   let resetData = null;
-  try {
-    const hasRedisConfig = Boolean(process.env.REDIS_URL || process.env.REDIS_HOST);
-    if (hasRedisConfig) {
-      if (redisClient && !redisClient.isOpen) {
-        await redisClient.connect();
-      }
-      if (redisClient?.isOpen) {
-      resetData = await redisClient.get(`reset:${token}`);
-      }
+  const userByDbToken = await User.findOne({
+    where: {
+      passwordResetToken: token,
+      passwordResetExpires: { [Op.gt]: new Date() }
     }
-  } catch (e) {}
+  });
+  if (userByDbToken) {
+    resetData = JSON.stringify({ userId: userByDbToken.id, email: userByDbToken.email });
+  }
+  if (!resetData) {
+    try {
+      if (redisClient?.isReady) {
+        resetData = await redisClient.get(`reset:${token}`);
+      }
+    } catch (e) {}
+  }
 
   if (!resetData) {
     const entry = inMemoryResetTokens.get(token);
@@ -457,9 +464,15 @@ router.post('/reset-password', [
   user.passwordHash = password; // Will be hashed by model hook
   await user.save();
 
-  // Delete reset token (best-effort)
+  // Delete reset token (best-effort) from DB
   try {
-    if (redisClient?.isOpen) {
+    if (user.passwordResetToken === token) {
+      await user.update({ passwordResetToken: null, passwordResetExpires: null });
+    }
+  } catch (e) {}
+  // And from Redis if present
+  try {
+    if (redisClient?.isReady) {
       await redisClient.del(`reset:${token}`);
     }
   } catch (e) {}

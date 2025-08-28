@@ -116,6 +116,17 @@ const User = sequelize.define('User', {
     allowNull: true,
     field: 'email_verification_expires'
   }
+  ,
+  passwordResetToken: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
+    field: 'password_reset_token'
+  },
+  passwordResetExpires: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    field: 'password_reset_expires'
+  }
 }, {
   tableName: 'users',
   timestamps: true,

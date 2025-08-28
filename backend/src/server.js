@@ -272,6 +272,22 @@ const startServer = async () => {
           });
           console.log('✅ Added missing column users.password_encrypted');
         }
+        // Ensure users.password_reset_token exists
+        if (!usersTable.password_reset_token) {
+          await qi.addColumn('users', 'password_reset_token', {
+            type: DataTypes.STRING(255),
+            allowNull: true,
+          });
+          console.log('✅ Added missing column users.password_reset_token');
+        }
+        // Ensure users.password_reset_expires exists
+        if (!usersTable.password_reset_expires) {
+          await qi.addColumn('users', 'password_reset_expires', {
+            type: DataTypes.DATE,
+            allowNull: true,
+          });
+          console.log('✅ Added missing column users.password_reset_expires');
+        }
         // Ensure transactions.metadata exists
         const transactionsTable = await qi.describeTable('transactions');
         if (!transactionsTable.metadata) {
