@@ -7,39 +7,39 @@ const AboutPage = () => {
     <div className="min-h-screen">
       <Header />
 
-      <section className="pt-20 pb-16 bg-gradient-to-br from-background via-secondary/10 to-background">
+      <section className="pt-16 sm:pt-20 pb-12 sm:pb-16 bg-gradient-to-br from-background via-secondary/10 to-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl lg:text-6xl font-bold mb-6">
+            <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold mb-4 sm:mb-6">
               <span className="gradient-gold bg-clip-text text-transparent">About Us</span>
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
+            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-6 sm:mb-8 leading-relaxed">
               Discover our mission and the principles behind Gold Carnival.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="py-16">
+      <section className="py-12 sm:py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto space-y-6">
-            <Card className="bg-card border-border p-8 space-y-6">
+          <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
+            <Card className="bg-card border-border p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
               <div>
-                <h2 className="text-2xl font-bold text-foreground mb-3">Secure, Transparent, Growth‑Focused</h2>
-                <p className="text-muted-foreground leading-relaxed">
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground mb-2 sm:mb-3">Secure, Transparent, Growth‑Focused</h2>
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                   Our team has designed a secure, transparent, and growth‑focused gold investment plan tailored to the needs of modern investors.
                 </p>
               </div>
 
               <div>
-                <h2 className="text-2xl font-bold text-foreground mb-3">Why Gold?</h2>
-                <p className="text-muted-foreground leading-relaxed">
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground mb-2 sm:mb-3">Why Gold?</h2>
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                   We present an opportunity to participate in a business that revolves around one of the most trusted and time‑tested assets in human history: gold.
                 </p>
               </div>
 
               <div>
-                <h2 className="text-2xl font-bold text-foreground mb-3">Refer & Earn</h2>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground mb-2 sm:mb-3">Refer & Earn</h2>
                 <ul className="list-disc pl-6 text-muted-foreground space-y-2">
                   <li>
                     Earn <span className="text-foreground font-semibold">$10</span> when someone signs up using your referral link and completes one plan purchase.

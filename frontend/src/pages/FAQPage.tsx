@@ -1,3 +1,5 @@
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 
 const FAQPage = () => {
@@ -9,16 +11,38 @@ const FAQPage = () => {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold mb-6">Frequently Asked Questions</h1>
-      <div className="grid gap-4">
-        {faqs.map((f, i) => (
-          <Card key={i} className="p-6">
-            <h2 className="text-lg font-semibold mb-2">{f.q}</h2>
-            <p className="text-sm text-muted-foreground">{f.a}</p>
-          </Card>
-        ))}
-      </div>
+    <div className="min-h-screen">
+      <Header />
+      
+      <section className="pt-16 sm:pt-20 pb-12 sm:pb-16 bg-gradient-to-br from-background via-secondary/10 to-background">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6">
+              <span className="gradient-gold bg-clip-text text-transparent">Frequently Asked Questions</span>
+            </h1>
+            <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8 leading-relaxed">
+              Find answers to common questions about Gold Carnival
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-12 sm:py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="grid gap-3 sm:gap-4">
+              {faqs.map((f, i) => (
+                <Card key={i} className="p-4 sm:p-6">
+                  <h2 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3 text-foreground">{f.q}</h2>
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{f.a}</p>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <Footer />
     </div>
   );
 };

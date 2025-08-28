@@ -85,44 +85,44 @@ const LoginPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-background">
       <Header />
 
-      <div className="flex items-center justify-center min-h-screen pt-20 pb-8">
-        <div className="w-full max-w-md mx-4">
+      <div className="flex items-center justify-center min-h-screen pt-16 sm:pt-20 pb-8 px-4">
+        <div className="w-full max-w-md">
           {/* Logo */}
-          <div className="text-center mb-8">
-            <img src={ticketIcon} alt="Gold Carnival" className="w-16 h-16 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold gradient-gold bg-clip-text text-transparent">
+          <div className="text-center mb-6 sm:mb-8">
+            <img src={ticketIcon} alt="Gold Carnival" className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4" />
+            <h1 className="text-xl sm:text-2xl font-bold gradient-gold bg-clip-text text-transparent">
               GOLD CARNIVAL
             </h1>
           </div>
 
-          <Card className="bg-card/80 backdrop-blur-sm border-border p-8">
+          <Card className="bg-card/80 backdrop-blur-sm border-border p-4 sm:p-6 lg:p-8">
             <Tabs defaultValue={defaultTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-8">
-                <TabsTrigger value="login" className="data-[state=active]:gradient-gold data-[state=active]:text-primary-foreground">
+              <TabsList className="grid w-full grid-cols-2 mb-6 sm:mb-8">
+                <TabsTrigger value="login" className="data-[state=active]:gradient-gold data-[state=active]:text-primary-foreground text-sm sm:text-base">
                   LOGIN
                 </TabsTrigger>
-                <TabsTrigger value="signup" className="data-[state=active]:gradient-gold data-[state=active]:text-primary-foreground">
+                <TabsTrigger value="signup" className="data-[state=active]:gradient-gold data-[state=active]:text-primary-foreground text-sm sm:text-base">
                   SIGN UP
                 </TabsTrigger>
               </TabsList>
 
               {errorMsg && (
-                <div className="mb-4 text-center text-destructive text-sm font-medium">
+                <div className="mb-4 text-center text-destructive text-xs sm:text-sm font-medium">
                   {errorMsg}
                 </div>
               )}
 
               {successMsg && (
-                <div className="mb-4 text-center text-green-600 text-sm font-medium">
+                <div className="mb-4 text-center text-green-600 text-xs sm:text-sm font-medium">
                   {successMsg}
                 </div>
               )}
 
               {/* Login Tab */}
               <TabsContent value="login">
-                <form onSubmit={handleLogin} className="space-y-6">
+                <form onSubmit={handleLogin} className="space-y-4 sm:space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="identifier" className="text-primary">Email or Member ID</Label>
+                    <Label htmlFor="identifier" className="text-primary text-sm sm:text-base">Email or Member ID</Label>
                     <Input
                       id="identifier"
                       placeholder="Enter Email or Member ID"
@@ -165,7 +165,7 @@ const LoginPage = () => {
                     </button>
                   </div>
 
-                  <Button type="submit" variant="gold" className="w-full text-base font-semibold mt-2" disabled={loading}>
+                  <Button type="submit" variant="gold" className="w-full text-sm sm:text-base font-semibold mt-2 py-3" disabled={loading}>
                     {loading ? "Please wait..." : "SIGN IN"}
                   </Button>
                 </form>
@@ -173,7 +173,7 @@ const LoginPage = () => {
 
               {/* Sign Up Tab */}
               <TabsContent value="signup">
-                <form onSubmit={handleSignup} className="space-y-6">
+                <form onSubmit={handleSignup} className="space-y-4 sm:space-y-6">
 
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-primary">Email</Label>
@@ -227,7 +227,7 @@ const LoginPage = () => {
                     </div>
                   </div>
 
-                  <Button type="submit" variant="gold" className="w-full text-base font-semibold" disabled={loading}>
+                  <Button type="submit" variant="gold" className="w-full text-sm sm:text-base font-semibold py-3" disabled={loading}>
                     {loading ? "Please wait..." : "SIGN UP"}
                   </Button>
                 </form>

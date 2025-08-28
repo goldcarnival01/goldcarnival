@@ -168,15 +168,15 @@ const DepositPage = () => {
     <div className="min-h-screen">
       <Header />
       
-      <div className="flex pt-20">
+      <div className="flex flex-col lg:flex-row pt-16 sm:pt-20">
         <DashboardSidebar />
         
         <div className="flex-1">
           {/* Header */}
-          <div className="bg-card border-b border-border p-6">
+          <div className="bg-card border-b border-border p-3 sm:p-4 lg:p-6">
             <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold text-foreground">DEPOSIT</h1>
-              <Button variant="ghost" size="sm" className="text-primary">
+              <h1 className="text-xl sm:text-2xl font-bold text-foreground">DEPOSIT</h1>
+              <Button variant="ghost" size="sm" className="text-primary text-xs sm:text-sm">
                 VIEW DEPOSIT FUND REPORT <Eye className="w-4 h-4 ml-2" />
               </Button>
             </div>

@@ -186,7 +186,7 @@ const MyWinningsPage = () => {
     return (
       <div className="min-h-screen">
         <Header />
-        <div className="flex pt-20">
+        <div className="flex flex-col lg:flex-row pt-16 sm:pt-20">
           <DashboardSidebar />
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
@@ -204,12 +204,12 @@ const MyWinningsPage = () => {
     <div className="min-h-screen">
       <Header />
       
-      <div className="flex pt-20">
+      <div className="flex flex-col lg:flex-row pt-16 sm:pt-20">
         <DashboardSidebar />
         
         <div className="flex-1">
           {/* Header */}
-          <div className="bg-card border-b border-border p-6">
+          <div className="bg-card border-b border-border p-3 sm:p-4 lg:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-foreground">MY EARNINGS</h1>

@@ -116,7 +116,7 @@ const MyPlansPage = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="flex">
+        <div className="flex flex-col lg:flex-row pt-16 sm:pt-20">
           <DashboardSidebar />
           <div className="flex-1 flex items-center justify-center">
             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary"></div>
@@ -130,13 +130,13 @@ const MyPlansPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <div className="flex">
+      <div className="flex flex-col lg:flex-row pt-16 sm:pt-20">
         <DashboardSidebar />
         <div className="flex-1">
-          <div className="p-6">
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold text-foreground mb-2">My Plans</h1>
-              <p className="text-muted-foreground">Manage your purchased plans and view plan details</p>
+          <div className="p-3 sm:p-4 lg:p-6">
+            <div className="mb-6 sm:mb-8">
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">My Plans</h1>
+              <p className="text-sm sm:text-base text-muted-foreground">Manage your purchased plans and view plan details</p>
             </div>
 
             {userPlans.length === 0 ? (
@@ -153,7 +153,7 @@ const MyPlansPage = () => {
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 {userPlans.map((userPlan) => {
                   console.log('Rendering userPlan:', userPlan);
                   console.log('Verified value:', userPlan.verified, 'Type:', typeof userPlan.verified);

@@ -77,52 +77,52 @@ const JackpotsSection = () => {
   }
 
   return (
-    <section className="py-20 bg-background">
+    <section className="py-12 sm:py-16 lg:py-20 bg-background">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <p className="text-primary text-sm font-medium mb-4 tracking-wider uppercase">
+        <div className="text-center mb-8 sm:mb-12">
+          <p className="text-primary text-xs sm:text-sm font-medium mb-3 sm:mb-4 tracking-wider uppercase">
             FOR YOUR GOLD-SIZED DREAMS
           </p>
-          <h2 className="text-4xl lg:text-5xl font-bold gradient-gold bg-clip-text text-transparent">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold gradient-gold bg-clip-text text-transparent">
             OUR EXCLUSIVE PLANS
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-4 gap-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
           {exclusivePlans.map((plan, index) => (
-            <Card key={plan.id || index} className="relative bg-card border-border p-8 group hover:shadow-gold-lg transition-all duration-500">
+            <Card key={plan.id || index} className="relative bg-card border-border p-2 sm:p-6 lg:p-8 group hover:shadow-gold-lg transition-all duration-500">
               {/* Badge */}
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                <div className="bg-primary text-primary-foreground px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">
+              <div className="absolute -top-3 sm:-top-4 left-1/2 -translate-x-1/2">
+                <div className="bg-primary text-primary-foreground px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-bold whitespace-nowrap">
                   {plan.type}
                 </div>
               </div>
 
               {/* Daily surprise badge */}
               {plan.badge && (
-                <div className="absolute -top-2 -right-2">
-                  <div className="bg-amber-500 text-black px-3 py-1 rounded-lg text-xs font-bold transform rotate-12">
+                <div className="absolute -top-1 sm:-top-2 -right-1 sm:-right-2">
+                  <div className="bg-amber-500 text-black px-2 sm:px-3 py-1 rounded-lg text-xs font-bold transform rotate-12">
                     {plan.badge}
                   </div>
                 </div>
               )}
 
-              <div className="text-center mb-8 mt-4">
-                <h3 className="text-4xl lg:text-5xl font-bold text-foreground mb-4">
+              <div className="text-center mb-3 sm:mb-8 mt-2 sm:mt-4">
+                <h3 className="text-lg sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground mb-2 sm:mb-4">
                   ${parseFloat(plan.amount).toLocaleString()}
                 </h3>
               </div>
 
-              <div className="space-y-4 mb-8">
+              <div className="space-y-2 sm:space-y-4 mb-3 sm:mb-8">
                 {plan.features && plan.features.map((feature, idx) => (
-                  <div key={idx} className="flex items-center space-x-3">
-                    <span className="text-2xl">{feature.icon}</span>
-                    <span className="text-sm text-muted-foreground">{feature.text}</span>
+                  <div key={idx} className="flex items-start space-x-1 sm:space-x-3">
+                    <span className="text-sm sm:text-xl lg:text-2xl flex-shrink-0">{feature.icon}</span>
+                    <span className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{feature.text}</span>
                   </div>
                 ))}
               </div>
 
-              <Button variant="gold" className="w-full text-base font-bold" onClick={() => handleBuyNow(plan)}>
+              <Button variant="gold" className="w-full text-xs sm:text-base font-bold py-2 sm:py-3" onClick={() => handleBuyNow(plan)}>
                 BUY NOW
               </Button>
             </Card>
@@ -132,34 +132,34 @@ const JackpotsSection = () => {
         {/* Premium Plan Section */}
         {premiumPlans.length > 0 && (
           <>
-            <div className="text-center mt-20 mb-12">
-              <h3 className="text-3xl lg:text-4xl font-bold gradient-gold bg-clip-text text-transparent">
+            <div className="text-center mt-12 sm:mt-16 lg:mt-20 mb-8 sm:mb-12">
+              <h3 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold gradient-gold bg-clip-text text-transparent">
                 OUR PREMIUM PLAN
               </h3>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
               {premiumPlans.map((plan, index) => (
                 <Card
                   key={plan.id || index}
-                  className="relative bg-card border-border p-8 group hover:shadow-gold-lg transition-all duration-500"
+                  className="relative bg-card border-border p-2 sm:p-6 lg:p-8 group hover:shadow-gold-lg transition-all duration-500"
                 >
-                  <div className="text-center mb-8 mt-4">
-                    <h4 className="text-4xl lg:text-5xl font-bold text-foreground mb-4">
+                  <div className="text-center mb-3 sm:mb-8 mt-2 sm:mt-4">
+                    <h4 className="text-lg sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground mb-2 sm:mb-4">
                       ${parseFloat(plan.amount).toLocaleString()}
                     </h4>
                   </div>
 
-                  <div className="space-y-4 mb-8">
+                  <div className="space-y-2 sm:space-y-4 mb-3 sm:mb-8">
                     {plan.features && plan.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center space-x-3">
-                        <span className="text-2xl">{feature.icon}</span>
-                        <span className="text-sm text-muted-foreground">{feature.text}</span>
+                      <div key={idx} className="flex items-start space-x-1 sm:space-x-3">
+                        <span className="text-sm sm:text-xl lg:text-2xl flex-shrink-0">{feature.icon}</span>
+                        <span className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{feature.text}</span>
                       </div>
                     ))}
                   </div>
 
-                  <Button variant="gold" className="w-full text-base font-bold" onClick={() => handleBuyNow(plan)}>
+                  <Button variant="gold" className="w-full text-xs sm:text-base font-bold py-2 sm:py-3" onClick={() => handleBuyNow(plan)}>
                     BUY NOW
                   </Button>
                 </Card>

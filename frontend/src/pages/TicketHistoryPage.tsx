@@ -14,22 +14,24 @@ const TicketHistoryPage = () => {
     <div className="min-h-screen">
       <Header />
       
-      <div className="flex pt-20">
+      <div className="flex flex-col lg:flex-row pt-16 sm:pt-20">
         <DashboardSidebar />
         
         <div className="flex-1">
           {/* Header */}
-          <div className="bg-card border-b border-border p-6">
+          <div className="bg-card border-b border-border p-3 sm:p-4 lg:p-6">
             <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold text-foreground">TICKET HISTORY</h1>
-              <Button variant="ghost" size="sm" className="text-primary" onClick={() => navigate('/dashboard/deposit')}>
-                BUY TICKET <ShoppingCart className="w-4 h-4 ml-2" />
+              <h1 className="text-xl sm:text-2xl font-bold text-foreground">TICKET HISTORY</h1>
+              <Button variant="ghost" size="sm" className="text-primary text-xs sm:text-sm" onClick={() => navigate('/dashboard/deposit')}>
+                <span className="hidden sm:inline">BUY TICKET</span>
+                <span className="sm:hidden">BUY</span>
+                <ShoppingCart className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" />
               </Button>
             </div>
           </div>
 
           {/* Content */}
-          <section className="p-6">
+          <section className="p-3 sm:p-4 lg:p-6">
             <div className="container mx-auto">
               {/* Filters */}
               <div className="flex items-center space-x-4 mb-6">

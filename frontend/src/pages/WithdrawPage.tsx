@@ -46,16 +46,16 @@ const WithdrawPage = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      <div className="flex pt-20">
+      <div className="flex flex-col lg:flex-row pt-16 sm:pt-20">
         <DashboardSidebar />
         <div className="flex-1">
-          <div className="bg-card border-b border-border p-6">
-            <h1 className="text-2xl font-bold text-foreground">WITHDRAW FUND</h1>
-            <p className="text-sm text-muted-foreground">Minimum withdraw amount is ${MIN_WITHDRAW}. Processing time: within 1 hour.</p>
+          <div className="bg-card border-b border-border p-3 sm:p-4 lg:p-6">
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground">WITHDRAW FUND</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground">Minimum withdraw amount is ${MIN_WITHDRAW}. Processing time: within 1 hour.</p>
           </div>
-          <section className="p-6">
+          <section className="p-3 sm:p-4 lg:p-6">
             <div className="container mx-auto max-w-xl">
-              <Card className="p-6 space-y-4">
+              <Card className="p-4 sm:p-6 space-y-3 sm:space-y-4">
                 {error && <div className="text-red-500 text-sm">{error}</div>}
                 {message && <div className="text-green-600 text-sm">{message}</div>}
                 <div>

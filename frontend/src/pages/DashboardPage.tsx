@@ -126,14 +126,10 @@ const DashboardPage = () => {
     <div className="min-h-screen">
       <Header />
       
-      <div className="flex flex-col lg:flex-row pt-20">
+      <div className="flex flex-col lg:flex-row pt-16 sm:pt-20">
         <DashboardSidebar />
         
         <div className="flex-1 min-w-0">
-          {/* Removed Live Draw Timer banner per requirements */}
-
-
-
           {/* Main Content */}
           <section className="p-3 sm:p-4 lg:p-6">
             <div className="container mx-auto max-w-7xl">
