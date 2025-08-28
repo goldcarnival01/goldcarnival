@@ -13,6 +13,20 @@ import Role from '../models/Role.js';
 import { sendEmail } from '../services/emailService.js';
 import { redisClient } from '../config/redis.js';
 
+// Lightweight in-memory fallback store for reset tokens when Redis is unavailable
+// Map token -> { userId, email, expiresAt }
+const inMemoryResetTokens = new Map();
+const storeResetTokenInMemory = (token, payload, ttlSeconds) => {
+  const expiresAt = Date.now() + ttlSeconds * 1000;
+  inMemoryResetTokens.set(token, { ...payload, expiresAt });
+  setTimeout(() => {
+    const entry = inMemoryResetTokens.get(token);
+    if (entry && entry.expiresAt <= Date.now()) {
+      inMemoryResetTokens.delete(token);
+    }
+  }, ttlSeconds * 1000 + 1000);
+};
+
 const router = express.Router();
 
 // Validation middleware
@@ -332,21 +346,30 @@ router.post('/forgot-password', [
   const resetToken = uuidv4();
   const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
 
-  // Ensure redis is connected and store reset token
+  // Ensure redis is connected and store reset token; if unavailable, use in-memory fallback
+  let tokenStored = false;
   try {
-    if (!redisClient.isOpen) {
+    if (redisClient && !redisClient.isOpen) {
       await redisClient.connect();
     }
-  } catch (e) {}
+    if (redisClient?.isOpen) {
+      await redisClient.setEx(`reset:${resetToken}`, 3600, JSON.stringify({
+        userId: user.id,
+        email: user.email
+      }));
+      tokenStored = true;
+    }
+  } catch (e) {
+    console.warn('⚠️ Redis unavailable for password reset token. Using in-memory fallback.');
+  }
+  if (!tokenStored) {
+    storeResetTokenInMemory(resetToken, { userId: user.id, email: user.email }, 3600);
+  }
 
-  await redisClient.setEx(`reset:${resetToken}`, 3600, JSON.stringify({
-    userId: user.id,
-    email: user.email
-  }));
-
-  // Send reset email
+  // Send reset email in background to avoid request timeout
+  // Only attempt to send if token storage succeeded (best-effort)
   try {
-    await sendEmail({
+    sendEmail({
       to: user.email,
       subject: 'Password Reset Request',
       template: 'password-reset',
@@ -354,15 +377,18 @@ router.post('/forgot-password', [
         name: user.firstName || user.memberId,
         resetLink: `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`
       }
-    });
-  } catch (emailError) {
-    console.error('Failed to send reset email:', emailError);
-    return res.status(500).json({
-      error: 'Email Service Error',
-      message: 'Failed to send password reset email'
-    });
+    })
+      .then(() => {
+        console.log('✅ Password reset email dispatched to:', user.email);
+      })
+      .catch((emailError) => {
+        console.error('❌ Failed to send reset email (non-blocking):', emailError.message);
+      });
+  } catch (emailErr) {
+    console.error('❌ Unexpected error scheduling reset email:', emailErr.message);
   }
 
+  // Respond immediately regardless of email sending outcome to prevent frontend timeout
   res.json({
     message: 'If an account with this email exists, a password reset link has been sent'
   });
@@ -384,14 +410,26 @@ router.post('/reset-password', [
 
   const { token, password } = req.body;
 
-  // Ensure redis is connected and get reset token data
+  // Ensure redis is connected and get reset token data; fallback to in-memory
+  let resetData = null;
   try {
-    if (!redisClient.isOpen) {
+    if (redisClient && !redisClient.isOpen) {
       await redisClient.connect();
+    }
+    if (redisClient?.isOpen) {
+      resetData = await redisClient.get(`reset:${token}`);
     }
   } catch (e) {}
 
-  const resetData = await redisClient.get(`reset:${token}`);
+  if (!resetData) {
+    const entry = inMemoryResetTokens.get(token);
+    if (entry && entry.expiresAt > Date.now()) {
+      resetData = JSON.stringify({ userId: entry.userId, email: entry.email });
+      // delete after use
+      inMemoryResetTokens.delete(token);
+    }
+  }
+
   if (!resetData) {
     return res.status(400).json({
       error: 'Invalid Reset Token',
@@ -415,7 +453,9 @@ router.post('/reset-password', [
 
   // Delete reset token (best-effort)
   try {
-    await redisClient.del(`reset:${token}`);
+    if (redisClient?.isOpen) {
+      await redisClient.del(`reset:${token}`);
+    }
   } catch (e) {}
 
   res.json({

@@ -76,6 +76,8 @@ export const authAPI = {
   login: (credentials) => api.post('/auth/login', credentials),
   logout: () => api.post('/auth/logout'),
   forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
+  // Allow more time for email dispatch on some SMTP providers
+  forgotPasswordLong: (email) => api.post('/auth/forgot-password', { email }, { timeout: 25000 }),
   resetPassword: (token, password) => api.post('/auth/reset-password', { token, password }),
 };
 
