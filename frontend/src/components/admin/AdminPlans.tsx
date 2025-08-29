@@ -21,7 +21,6 @@ const AdminPlans = () => {
     name: '',
     type: '',
     amount: '',
-    price: '',
     monthlyIncome: '',
     bonusReward: '',
     category: 'EXCLUSIVE_PLAN',
@@ -64,7 +63,6 @@ const AdminPlans = () => {
       const planData = {
         ...formData,
         amount: parseFloat(formData.amount),
-        price: formData.price ? parseFloat(formData.price) : null,
         monthlyIncome: formData.monthlyIncome ? parseFloat(formData.monthlyIncome) : null,
         bonusReward: formData.bonusReward ? parseFloat(formData.bonusReward) : null,
         sortOrder: parseInt(formData.sortOrder) || 0
@@ -102,7 +100,6 @@ const AdminPlans = () => {
       name: plan.name,
       type: plan.type,
       amount: plan.amount.toString(),
-      price: plan.price ? plan.price.toString() : '',
       monthlyIncome: plan.monthlyIncome ? plan.monthlyIncome.toString() : '',
       bonusReward: plan.bonusReward ? plan.bonusReward.toString() : '',
       category: plan.category,
@@ -158,7 +155,6 @@ const AdminPlans = () => {
       name: '',
       type: '',
       amount: '',
-      price: '',
       monthlyIncome: '',
       bonusReward: '',
       category: 'EXCLUSIVE_PLAN',
@@ -249,17 +245,6 @@ const AdminPlans = () => {
                     value={formData.amount}
                     onChange={(e) => setFormData(prev => ({...prev, amount: e.target.value}))}
                     required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="price">Price ($)</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    step="0.01"
-                    value={formData.price}
-                    onChange={(e) => setFormData(prev => ({...prev, price: e.target.value}))}
-                    placeholder="Only for exclusive plans"
                   />
                 </div>
               </div>
@@ -391,7 +376,6 @@ const AdminPlans = () => {
                   </div>
                   <p className="text-sm text-gray-600">
                     ${plan.amount} • Type: {plan.type}
-                    {plan.price && ` • Price: $${plan.price}`}
                     {plan.monthlyIncome && ` • Monthly: $${plan.monthlyIncome}`}
                   </p>
                   <div className="flex flex-wrap gap-1 mt-1">

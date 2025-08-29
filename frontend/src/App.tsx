@@ -27,6 +27,7 @@ import AdminPage from "./pages/AdminPage";
 import AdminUserPlansPage from "./pages/AdminUserPlansPage";
 import WithdrawPage from "./pages/WithdrawPage";
 import MyReferralsPage from "./pages/MyReferralsPage";
+import ProfilePage from "./pages/ProfilePage";
 
 const queryClient = new QueryClient();
 
@@ -102,6 +103,11 @@ const AppRoutes = () => {
       <Route path="/dashboard/withdraw-fund" element={
         <ProtectedRoute>
           <WithdrawPage />
+        </ProtectedRoute>
+      } />
+      <Route path="/dashboard/profile" element={
+        <ProtectedRoute>
+          <ProfilePage />
         </ProtectedRoute>
       } />
       <Route path="/dashboard/referrals" element={

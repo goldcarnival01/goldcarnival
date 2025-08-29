@@ -385,6 +385,38 @@ router.patch('/admin/:id/verify', authenticateToken, requirePermission('plan.man
   }
 });
 
+// Admin route - Unverify user plan (set back to pending)
+router.patch('/admin/:id/unverify', authenticateToken, requirePermission('plan.manage'), async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const userPlan = await UserPlan.findByPk(id);
+    if (!userPlan) {
+      return res.status(404).json({
+        success: false,
+        message: 'User plan not found'
+      });
+    }
+
+    await userPlan.update({
+      verified: 'pending'
+    });
+
+    res.json({
+      success: true,
+      message: 'User plan set to pending successfully',
+      data: userPlan
+    });
+  } catch (error) {
+    console.error('Error unverifying user plan:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error unverifying user plan',
+      error: error.message
+    });
+  }
+});
+
 // Admin route - Reject user plan
 router.delete('/admin/:id/reject', authenticateToken, requirePermission('plan.manage'), async (req, res) => {
   try {

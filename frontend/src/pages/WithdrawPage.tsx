@@ -60,7 +60,7 @@ const WithdrawPage = () => {
                 {message && <div className="text-green-600 text-sm">{message}</div>}
                 <div>
                   <Label>Amount (USD)</Label>
-                  <Input value={amount} onChange={(e) => setAmount(e.target.value)} placeholder={`Min ${MIN_WITHDRAW}`} />
+                  <Input value={amount} onChange={(e) => setAmount(e.target.value)} />
                 </div>
                 <div>
                   <Label>Currency</Label>

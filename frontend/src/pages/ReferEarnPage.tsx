@@ -22,18 +22,18 @@ const ReferEarnPage = () => {
         return;
       }
       try {
-        const [linkRes, statsRes] = await Promise.all([
+        const [linkRes, statsRes] = await Promise.allSettled([
           referralAPI.getLink(),
           referralAPI.getStats(),
         ]);
-        const linkData = linkRes.data;
+        const linkData = linkRes.status === 'fulfilled' ? linkRes.value.data : {};
         const s = statsRes.data?.stats || statsRes.data;
-        setReferralCode(linkData.referralCode);
-        setReferralLink(linkData.referralLink);
+        setReferralCode(linkData?.referralCode || '');
+        setReferralLink(linkData?.referralLink || '');
         setStatsData({
-          totalReferrals: Number(s.totalReferrals || 0),
-          totalCommission: Number(s.totalCommission || 0),
-          commissionCount: Number(s.commissionCount || 0),
+          totalReferrals: Number((s as any)?.totalReferrals || 0),
+          totalCommission: Number((s as any)?.totalCommission || 0),
+          commissionCount: Number((s as any)?.commissionCount || 0),
         });
       } catch (e) {
         // ignore
@@ -136,19 +136,27 @@ const ReferEarnPage = () => {
               <h3 className="text-xl font-semibold text-foreground mb-4 text-center">
                 Your Referral Link
               </h3>
-              <div className="flex gap-2">
-                <Input 
-                  value={referralLink || `${window.location.origin}/signup?ref=${referralCode}`}
-                  readOnly
-                  className="bg-secondary border-border"
-                />
-                <Button onClick={copyReferralCode} variant="gold">
-                  <Copy className="w-4 h-4" />
-                </Button>
-              </div>
-              <p className="text-sm text-muted-foreground mt-3 text-center">
-                Share this link with friends to start earning commissions
-              </p>
+              {isAuthenticated ? (
+                <>
+                  <div className="flex gap-2">
+                    <Input 
+                      value={(referralLink || (referralCode ? `${window.location.origin}/signup?ref=${referralCode}` : ''))}
+                      readOnly
+                      className="bg-secondary border-border"
+                    />
+                    <Button onClick={copyReferralCode} variant="gold" disabled={!referralCode}>
+                      <Copy className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-3 text-center">
+                    Share this link with friends to start earning commissions
+                  </p>
+                </>
+              ) : (
+                <p className="text-center text-muted-foreground">
+                  Please log in to generate your referral link.
+                </p>
+              )}
             </Card>
           </div>
         </div>

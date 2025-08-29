@@ -21,15 +21,14 @@ router.get('/link', asyncHandler(async (req, res) => {
     });
   }
 
-  // Ensure user has a referral code
-  if (!user.referralCode) {
+  // Ensure user has a referral code (migrate old JUMBO* codes to GOLD*)
+  if (!user.referralCode || (typeof user.referralCode === 'string' && user.referralCode.startsWith('JUMBO'))) {
     // Generate a new referral code if user doesn't have one
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let referralCode = 'JUMBO';
+    let referralCode = 'GOLD';
     for (let i = 0; i < 6; i++) {
       referralCode += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    
     user.referralCode = referralCode;
     await user.save();
   }

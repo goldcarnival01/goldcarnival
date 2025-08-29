@@ -175,6 +175,7 @@ export const userPlansAPI = {
   getAllAdmin: (params) => api.get('/user-plans/admin/all', { params }),
   createAdmin: (planData) => api.post('/user-plans/admin/create', planData),
   verify: (id) => api.patch(`/user-plans/admin/${id}/verify`),
+  unverify: (id) => api.patch(`/user-plans/admin/${id}/unverify`),
   reject: (id) => api.delete(`/user-plans/admin/${id}/reject`),
 };
 

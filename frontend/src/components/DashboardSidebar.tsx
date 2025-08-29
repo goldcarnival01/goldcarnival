@@ -62,9 +62,9 @@ const DashboardSidebar = () => {
           </Avatar>
           <div className="min-w-0 flex-1">
             <p className="font-semibold text-foreground text-sm lg:text-base truncate">{user?.memberId || 'Loading...'}</p>
-            <button className="text-xs lg:text-sm text-primary hover:underline">
+            <NavLink to="/dashboard/profile" className="text-xs lg:text-sm text-primary hover:underline">
               View Profile &gt;
-            </button>
+            </NavLink>
             <p className="text-xs text-muted-foreground truncate">{getUserDisplayName(user)}</p>
           </div>
         </div>

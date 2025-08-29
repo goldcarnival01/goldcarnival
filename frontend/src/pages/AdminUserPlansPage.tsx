@@ -107,6 +107,31 @@ const AdminUserPlansPage = () => {
     }
   };
 
+  const handleUnverify = async (planId: number) => {
+    try {
+      // Optimistically set status back to pending
+      setPlans(prevPlans =>
+        prevPlans.map(plan =>
+          plan.id === planId
+            ? { ...plan, verified: 'pending' as const }
+            : plan
+        )
+      );
+
+      await userPlansAPI.unverify(planId);
+    } catch (error) {
+      console.error('Failed to unverify plan:', error);
+      // Revert to verified on error
+      setPlans(prevPlans =>
+        prevPlans.map(plan =>
+          plan.id === planId
+            ? { ...plan, verified: 'verified' as const }
+            : plan
+        )
+      );
+    }
+  };
+
   const handleReject = async (planId: number) => {
     if (!confirm('Are you sure you want to reject this plan? This action cannot be undone.')) return;
     
@@ -198,7 +223,16 @@ const AdminUserPlansPage = () => {
                         </div>
                       )}
                       {normalizeVerified(p.verified) === 'verified' && (
-                        <Badge variant="default" className="bg-green-600">Verified</Badge>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="default" className="bg-green-600">Verified</Badge>
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => handleUnverify(p.id)}
+                          >
+                            Unverify
+                          </Button>
+                        </div>
                       )}
                       {normalizeVerified(p.verified) === 'rejected' && (
                         <Badge variant="destructive">Rejected</Badge>
